@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7cc3b9735ee74848bf0641533021b37, type: 3}
   m_Name: PlayerSettings
   m_EditorClassIdentifier: 
-  jumpForce: 10
-  movementSpeed: 50
   health: 100
+  playerStopsWhenKeyUp: 1
+  movementSpeed: 75
+  jumpForce: 500
+  canMoveWhenFalling: 1
+  xSpeedMofierFalling: 0.8
+  offGroundDelayToFall: 0.1

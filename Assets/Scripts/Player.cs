@@ -21,6 +21,8 @@ public class Player : MonoBehaviour
     private float health;
     private float currentSpeed;
     private bool isOnGround;
+    private float offGrounfDelay;
+    private bool isFalling;
 
     private void Start()
     {
@@ -38,14 +40,12 @@ public class Player : MonoBehaviour
     {
         gameEvents.onJumpEvent += OnJump;
         gameEvents.onMoveEvent += OnMove;
-        gameEvents.onLookEvent += OnLook;
     }
 
     private void RemoveEvents()
     {
         gameEvents.onJumpEvent -= OnJump;
         gameEvents.onMoveEvent -= OnMove;
-        gameEvents.onLookEvent -= OnLook;
     }
 
     private void OnDestroy()
@@ -56,20 +56,73 @@ public class Player : MonoBehaviour
     private void Update()
     {
         MovementUpdate();
-        CheckIfOnGround();
+        CheckOnGround();
+        CheckIsFalling();
     }
 
-    private void CheckIfOnGround()
+    private void CheckIsFalling()
+    {
+        if (isOnGround)
+        {
+            offGrounfDelay = 0;
+        }
+        else
+        {
+            offGrounfDelay += Time.deltaTime;
+        }
+
+        if (offGrounfDelay >= settings.OffGroundDelayToFall)
+        {
+            isFalling = true;
+            animator.SetBool("Grounded", false);
+            animator.SetFloat("AirSpeedY", rb.velocity.y);
+        }
+        else
+        {
+            isFalling = false;
+            animator.SetBool("Grounded", true);
+            animator.SetFloat("AirSpeedY", 0);
+        }
+    }
+
+    private void CheckOnGround()
     {
         isOnGround = feets.IsTouchingLayers(LayerMask.GetMask(gameSettings.GroundLayer));
     }
 
     private void MovementUpdate()
     {
-        if (currentSpeed != 0 && isOnGround)
+        //MOVE
+        if (currentSpeed != 0 && !isFalling)
         {
             animator.SetInteger("AnimState", 1);
-            rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.deltaTime, 0);
+            rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.deltaTime, rb.velocity.y);
+        }
+        else if(settings.CanMoveWhenFalling && currentSpeed != 0)
+        {
+            rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.deltaTime * settings.XSpeedModiferFalling, rb.velocity.y);
+            animator.SetInteger("AnimState", 0);
+        }
+        //STOP MOVING
+        else if(settings.PlayerStopsWhenKeyUp && currentSpeed == 0)
+        {
+            animator.SetInteger("AnimState", 0);
+
+            if (isFalling)
+            {
+                if (settings.CanMoveWhenFalling)
+                {
+                    rb.velocity = new Vector2(0, rb.velocity.y);
+                }
+            }
+            else
+            {
+                rb.velocity = new Vector2(0, rb.velocity.y);
+            }
+        }
+        else
+        {
+            animator.SetInteger("AnimState", 0);
         }
     }
 
@@ -85,12 +138,12 @@ public class Player : MonoBehaviour
 
     private void OnJump()
     {
-
-    }
-
-    private void OnLook(Vector2 vector)
-    {
-
+        Debug.Log("jump");
+        if (!isFalling)
+        {
+            rb.AddForce(new Vector2(0, settings.JumpForce));
+            animator.SetTrigger("Jump");
+        }
     }
 
     private void Die()

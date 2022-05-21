@@ -8,7 +8,6 @@ public class GameEvents : MonoBehaviour
 {
     public static GameEvents instance { get; private set; }
 
-    public event Action<Vector2> onLookEvent;
     public event Action<float> onMoveEvent;
     public event Action onJumpEvent;
 
@@ -34,11 +33,5 @@ public class GameEvents : MonoBehaviour
     {
         //Debug.Log("Move " + input.Get<float>());
         onMoveEvent?.Invoke(input.Get<float>());
-    }
-
-    public void OnLook(InputValue input)
-    {
-        //Debug.Log("Look " + input.Get<Vector2>());
-        onLookEvent?.Invoke(input.Get<Vector2>());
     }
 }
