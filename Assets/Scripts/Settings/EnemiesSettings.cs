@@ -16,11 +16,11 @@ namespace Settings
         public float Health => health;
 
         [SerializeField]
-        private float attackDamage;
-        public float AttackDamage => attackDamage;
+        private float attack1Damage;
+        public float Attack1Damage => attack1Damage;
 
         [SerializeField]
-        private float waitTimeBeforeAttack;
-        public float WaitTimeBeforeAttack => waitTimeBeforeAttack;
+        private float timeBetweenAttack;
+        public float TimeBetweenAttack => timeBetweenAttack;
     }
 }

@@ -23,13 +23,13 @@ public class Enemies : MonoBehaviour
     private BoxCollider2D leftSideLookingWall;
 
     [SerializeField]
-    private BoxCollider2D rightSideAttack1;
-    [SerializeField]
-    private BoxCollider2D leftSideAttack1;
+    private BoxCollider2D detectionAttack1;
+    private Player playerInRange;
 
 
     private float health;
     private float currentDirection;
+    private bool canAttack;
     private bool isAttacking;
 
     [SerializeField]
@@ -45,14 +45,33 @@ public class Enemies : MonoBehaviour
 
         health = settings.Health;
         isAttacking = false;
+        canAttack = true;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Player player = collision.GetComponent<Player>();
+        if (player != null)
+        {
+            playerInRange = player;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        Player player = collision.GetComponent<Player>();
+        if (player != null && playerInRange == player)
+        {
+            playerInRange = null;
+        }
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(DetectPlayer())
+        if(DetectPlayerAttack1() && canAttack)
         {
-            StartCoroutine(WaitBeforeAttack());
+            PrepAttack1();
         }
 
         if (!isAttacking)
@@ -62,19 +81,14 @@ public class Enemies : MonoBehaviour
         } 
     }
 
-    private bool DetectPlayer()
+    private bool DetectPlayerAttack1()
     {
-        BoxCollider2D lookingSide;
-        if (IsFacingRight())
-        {
-            lookingSide = rightSideAttack1;
-        }
-        else
-        {
-            lookingSide = leftSideAttack1;
-        }
+        if (playerInRange == null)
+            return false;
 
-        if (lookingSide.IsTouchingLayers(LayerMask.GetMask(gameSettings.PlayerLayer)))
+        if (detectionAttack1.IsTouchingLayers(LayerMask.GetMask(gameSettings.PlayerLayer))
+            && (spriteRenderer.flipX && playerInRange.transform.position.x < transform.position.x)
+            || (!spriteRenderer.flipX && playerInRange.transform.position.x > transform.position.x))
         {
             return true;
         }
@@ -82,23 +96,61 @@ public class Enemies : MonoBehaviour
         return false;
     }
 
-    private void Attack()
+    private IEnumerator ResetAttack()
     {
+        yield return new WaitForSecondsRealtime(settings.TimeBetweenAttack);
+        canAttack = true;
+    }
+
+    private void Attack1()
+    {
+        canAttack = false;
+        CauseDamage(settings.Attack1Damage);
+
+        StartCoroutine(ResetAttack());
+        isAttacking = false;
+    }
+
+    private void CauseDamage(float damage)
+    {
+        if (playerInRange == null)
+            return;
+
+        if (spriteRenderer.flipX && playerInRange.transform.position.x < transform.position.x)
+        {
+            if (playerInRange.TakeDamage(damage))
+            {
+                playerInRange = null;
+            }
+        }
+        else if (!spriteRenderer.flipX && playerInRange.transform.position.x > transform.position.x)
+        {
+            if (playerInRange.TakeDamage(damage))
+            {
+                playerInRange = null;
+            }
+        }
+    }
+
+    private void PrepAttack1()
+    {
+        if (!isAttacking)
+        {
+            isAttacking = true;
+            animator.SetTrigger("IsPrepAttacking");
+        }
 
     }
 
-    private IEnumerator WaitBeforeAttack()
+    private void PerformeAttack1()
     {
-        isAttacking = true;
-
-        yield return new WaitForSeconds(settings.WaitTimeBeforeAttack);
-
-        if (DetectPlayer())
+        if (DetectPlayerAttack1())
         {
-            Attack();
+            animator.SetBool("IsAttacking", true);
         }
         else
         {
+            animator.SetBool("IsAttacking", false);
             isAttacking = false;
         }
     }
@@ -149,14 +201,16 @@ public class Enemies : MonoBehaviour
         return !spriteRenderer.flipX;
     }
 
-    public void TakeDamage(float dmg)
+    public bool TakeDamage(float dmg)
     {
         health -= dmg;
 
         if (health <= 0)
         {
             Die();
+            return true;
         }
+        return false;
     }
     private void Die()
     {
