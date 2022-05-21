@@ -13,7 +13,6 @@ public class Player : MonoBehaviour
     private GameSettings gameSettings;
     [SerializeField]
     private Collider2D feets;
-    private Collider2D eyes;
     private Animator animator;
     private Rigidbody2D rb;
     private GameEvents gameEvents;
@@ -26,6 +25,7 @@ public class Player : MonoBehaviour
     private bool isFalling;
     private float attackCoolDown;
     private bool primaryAttackFlip = false;
+    private List<Enemies> enemiesInRange = new List<Enemies>();
 
     private void Start()
     {
@@ -41,12 +41,20 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
+        Enemies enemy = collision.GetComponent<Enemies>();
+        if (enemy != null)
+        {
+            enemiesInRange.Add(enemy);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        
+        Enemies enemy = collision.GetComponent<Enemies>();
+        if (enemy != null && enemiesInRange.Contains(enemy))
+        {
+            enemiesInRange.Remove(enemy);
+        }
     }
 
     private void AddEvents()
@@ -104,6 +112,7 @@ public class Player : MonoBehaviour
                 animator.SetTrigger("Attack2");
             }
             primaryAttackFlip = !primaryAttackFlip;
+            CauseDamage(settings.PrimaryAttackDamage);
         }
     }
 
@@ -113,6 +122,34 @@ public class Player : MonoBehaviour
         {
             animator.SetTrigger("Attack3");
             attackCoolDown += settings.SecondaryAttackCoolDown;
+            CauseDamage(settings.SecondaryAttackDamage);
+        }
+    }
+
+    private void CauseDamage(float damage)
+    {
+        List<Enemies> toRemove = new List<Enemies>();
+        foreach (Enemies enemy in enemiesInRange)
+        {
+            if (spriteRenderer.flipX && enemy.transform.position.x < transform.position.x)
+            {
+                if (enemy.TakeDamage(damage))
+                {
+                    toRemove.Add(enemy);
+                }
+            }
+            else if (!spriteRenderer.flipX && enemy.transform.position.x > transform.position.x)
+            {
+                if (enemy.TakeDamage(damage))
+                {
+                    toRemove.Add(enemy);
+                }
+            }
+        }
+
+        foreach (Enemies enemy in toRemove)
+        {
+            enemiesInRange.Remove(enemy);
         }
     }
 
@@ -206,13 +243,15 @@ public class Player : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void TakeDamage(float dmg)
+    public bool TakeDamage(float dmg)
     {
         health -= dmg;
 
         if (health <= 0)
         {
             Die();
+            return true;
         }
+        return false;
     }
 }
