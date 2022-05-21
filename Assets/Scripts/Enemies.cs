@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Settings;
-
+using System;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -23,14 +23,14 @@ public class Enemies : MonoBehaviour
     private BoxCollider2D leftSideLookingWall;
 
     [SerializeField]
-    private BoxCollider2D rightSideLookingPlayer;
+    private BoxCollider2D rightSideAttack1;
     [SerializeField]
-    private BoxCollider2D leftSideLookingPlayer;
+    private BoxCollider2D leftSideAttack1;
 
 
     private float health;
     private float currentDirection;
-    private bool isOnGround;
+    private bool isAttacking;
 
     [SerializeField]
     LayerMask[] layerMasksFlip;
@@ -44,18 +44,66 @@ public class Enemies : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         health = settings.Health;
+        isAttacking = false;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        DetectPlayer();
+        if(DetectPlayer())
+        {
+            StartCoroutine(WaitBeforeAttack());
+        }
 
-        MovementUpdate();
-        FlipUpdate();
+        if (!isAttacking)
+        { 
+            MovementUpdate();
+            FlipUpdate();
+        } 
     }
 
-    private void DetectPlayer()
+    private bool DetectPlayer()
+    {
+        BoxCollider2D lookingSide;
+        if (IsFacingRight())
+        {
+            lookingSide = rightSideAttack1;
+        }
+        else
+        {
+            lookingSide = leftSideAttack1;
+        }
+
+        if (lookingSide.IsTouchingLayers(LayerMask.GetMask(gameSettings.PlayerLayer)))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void Attack()
+    {
+        throw new NotImplementedException();
+    }
+
+    private IEnumerator WaitBeforeAttack()
+    {
+        isAttacking = true;
+
+        yield return new WaitForSeconds(settings.WaitTimeBeforeAttack);
+
+        if (DetectPlayer())
+        {
+            Attack();
+        }
+        else
+        {
+            isAttacking = false;
+        }
+    }
+
+    private void FlipUpdate()
     {
         BoxCollider2D lookingSide;
         if (IsFacingRight())
@@ -67,23 +115,12 @@ public class Enemies : MonoBehaviour
             lookingSide = leftSideLookingWall;
         }
 
-    }
-
-    private void FlipUpdate()
-    {
-        BoxCollider2D lookingSide;
-        if (IsFacingRight())
+        foreach (var layerMask in layerMasksFlip)
         {
-            lookingSide = rightSideLookingPlayer;
-        }
-        else
-        {
-            lookingSide = leftSideLookingPlayer;
-        }
-
-        if (lookingSide.IsTouchingLayers(LayerMask.GetMask(gameSettings.PlayerLayer)))
-        {
-            Flip();
+            if (lookingSide.IsTouchingLayers(layerMask))
+            {
+                Flip();
+            }
         }
     }
 

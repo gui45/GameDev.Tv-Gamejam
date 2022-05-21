@@ -18,5 +18,9 @@ namespace Settings
         [SerializeField]
         private float attackDamage;
         public float AttackDamage => attackDamage;
+
+        [SerializeField]
+        private float waitTimeBeforeAttack;
+        public float WaitTimeBeforeAttack => waitTimeBeforeAttack;
     }
 }
