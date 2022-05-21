@@ -19,3 +19,7 @@ MonoBehaviour:
   canMoveWhenFalling: 1
   xSpeedMofierFalling: 0.8
   offGroundDelayToFall: 0.1
+  primaryAttackDamage: 15
+  primaryAttackCoolDown: 0.2
+  secondaryAttackDamage: 25
+  secondaryAttackCoolDown: 1

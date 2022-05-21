@@ -12,7 +12,8 @@ public class Player : MonoBehaviour
     private PlayerSettings settings;
     private GameSettings gameSettings;
     [SerializeField]
-    private BoxCollider2D feets;
+    private Collider2D feets;
+    private Collider2D eyes;
     private Animator animator;
     private Rigidbody2D rb;
     private GameEvents gameEvents;
@@ -23,6 +24,8 @@ public class Player : MonoBehaviour
     private bool isOnGround;
     private float offGrounfDelay;
     private bool isFalling;
+    private float attackCoolDown;
+    private bool primaryAttackFlip = false;
 
     private void Start()
     {
@@ -36,16 +39,30 @@ public class Player : MonoBehaviour
         health = settings.Health;
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        
+    }
+
     private void AddEvents()
     {
         gameEvents.onJumpEvent += OnJump;
         gameEvents.onMoveEvent += OnMove;
+        gameEvents.OnPrimaryActionEvent += OnPrimaryAttack;
+        gameEvents.OnSecondaryActionEvent += OnSecondaryActtack;
     }
 
     private void RemoveEvents()
     {
         gameEvents.onJumpEvent -= OnJump;
         gameEvents.onMoveEvent -= OnMove;
+        gameEvents.OnPrimaryActionEvent -= OnPrimaryAttack;
+        gameEvents.OnSecondaryActionEvent -= OnSecondaryActtack;
     }
 
     private void OnDestroy()
@@ -57,11 +74,46 @@ public class Player : MonoBehaviour
     {
         CheckOnGround();
         CheckIsFalling();
+        HandleAttackCoolDown();
     }
 
     private void FixedUpdate()
     {
         MovementUpdate();
+    }
+
+    private void HandleAttackCoolDown()
+    {
+        if (attackCoolDown > 0)
+        {
+            attackCoolDown -= Time.deltaTime;
+        }
+    }
+
+    private void OnPrimaryAttack()
+    {
+        if (attackCoolDown <= 0)
+        {
+            attackCoolDown += settings.PrimaryAttackCoolDown;
+            if (primaryAttackFlip)
+            {
+                animator.SetTrigger("Attack1");
+            }
+            else
+            {
+                animator.SetTrigger("Attack2");
+            }
+            primaryAttackFlip = !primaryAttackFlip;
+        }
+    }
+
+    private void OnSecondaryActtack()
+    {
+        if (attackCoolDown <= 0)
+        {
+            animator.SetTrigger("Attack3");
+            attackCoolDown += settings.SecondaryAttackCoolDown;
+        }
     }
 
     private void CheckIsFalling()

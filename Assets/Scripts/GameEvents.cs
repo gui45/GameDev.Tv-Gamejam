@@ -10,6 +10,8 @@ public class GameEvents : MonoBehaviour
 
     public event Action<float> onMoveEvent;
     public event Action onJumpEvent;
+    public event Action OnPrimaryActionEvent;
+    public event Action OnSecondaryActionEvent;
 
     void Awake()
     {
@@ -21,6 +23,19 @@ public class GameEvents : MonoBehaviour
         {
             instance = this;
         }
+    }
+
+
+    // INPUTS
+
+    public void OnPrimaryAction()
+    {
+        OnPrimaryActionEvent?.Invoke();
+    }
+
+    public void OnSecondaryAction()
+    {
+        OnSecondaryActionEvent?.Invoke();
     }
 
     public void OnJump()

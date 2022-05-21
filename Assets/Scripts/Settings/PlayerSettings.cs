@@ -9,12 +9,12 @@ namespace Settings
     {
         [Header("General")]
 
-
         [SerializeField]
         private float health;
         public float Health => health;
 
         [Header("Movement")]
+
         [SerializeField]
         private bool playerStopsWhenKeyUp;
         public bool PlayerStopsWhenKeyUp => playerStopsWhenKeyUp;
@@ -42,6 +42,26 @@ namespace Settings
         [Tooltip("delais que onGround = false pour considerer le joueur comme etant entrain de tomber")]
         private float offGroundDelayToFall;
         public float OffGroundDelayToFall => offGroundDelayToFall;
+
+        [Header("Primary attack")]
+
+        [SerializeField]
+        private float primaryAttackDamage;
+        public float PrimaryAttackDamage => primaryAttackDamage;
+
+        [SerializeField]
+        private float primaryAttackCoolDown;
+        public float PrimaryAttackCoolDown => primaryAttackCoolDown;
+
+        [Header("Secondary attack")]
+
+        [SerializeField]
+        private float secondaryAttackDamage;
+        public float SecondaryAttackDamage => secondaryAttackDamage;
+
+        [SerializeField]
+        private float secondaryAttackCoolDown;
+        public float SecondaryAttackCoolDown => secondaryAttackCoolDown;
     }
 }
 
