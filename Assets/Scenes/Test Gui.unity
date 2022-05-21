@@ -131,10 +131,6 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7285234654632008090, guid: 11420f7b3e180444a96cddd300a276db, type: 3}
-      propertyPath: m_DefaultControlScheme
-      value: Keyboard&Mouse
-      objectReference: {fileID: 0}
     - target: {fileID: 7285234655322567913, guid: 11420f7b3e180444a96cddd300a276db, type: 3}
       propertyPath: m_Name
       value: Main Camera
