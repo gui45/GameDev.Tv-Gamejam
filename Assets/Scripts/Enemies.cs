@@ -84,7 +84,7 @@ public class Enemies : MonoBehaviour
 
     private void Attack()
     {
-        throw new NotImplementedException();
+
     }
 
     private IEnumerator WaitBeforeAttack()
