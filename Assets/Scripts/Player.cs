@@ -55,9 +55,13 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        MovementUpdate();
         CheckOnGround();
         CheckIsFalling();
+    }
+
+    private void FixedUpdate()
+    {
+        MovementUpdate();
     }
 
     private void CheckIsFalling()
@@ -96,11 +100,11 @@ public class Player : MonoBehaviour
         if (currentSpeed != 0 && !isFalling)
         {
             animator.SetInteger("AnimState", 1);
-            rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.deltaTime, rb.velocity.y);
+            rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.fixedDeltaTime, rb.velocity.y);
         }
         else if(settings.CanMoveWhenFalling && currentSpeed != 0)
         {
-            rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.deltaTime * settings.XSpeedModiferFalling, rb.velocity.y);
+            rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.fixedDeltaTime * settings.XSpeedModiferFalling, rb.velocity.y);
             animator.SetInteger("AnimState", 0);
         }
         //STOP MOVING

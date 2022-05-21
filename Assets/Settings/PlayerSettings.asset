@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   playerStopsWhenKeyUp: 1
-  movementSpeed: 75
+  movementSpeed: 150
   jumpForce: 500
   canMoveWhenFalling: 1
   xSpeedMofierFalling: 0.8
