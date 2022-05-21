@@ -16,11 +16,16 @@ public class Enemies : MonoBehaviour
     private GameEvents gameEvents;
     private GameSettings gameSettings;
     private SpriteRenderer spriteRenderer;
+
     [SerializeField]
-    private BoxCollider2D rightSide;
+    private BoxCollider2D rightSideLookingWall;
     [SerializeField]
-    private BoxCollider2D leftSide;
-    private BoxCollider2D lookingSide;
+    private BoxCollider2D leftSideLookingWall;
+
+    [SerializeField]
+    private BoxCollider2D rightSideLookingPlayer;
+    [SerializeField]
+    private BoxCollider2D leftSideLookingPlayer;
 
 
     private float health;
@@ -42,31 +47,43 @@ public class Enemies : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        DetectPlayer();
 
         MovementUpdate();
-
         FlipUpdate();
+    }
+
+    private void DetectPlayer()
+    {
+        BoxCollider2D lookingSide;
+        if (IsFacingRight())
+        {
+            lookingSide = rightSideLookingWall;
+        }
+        else
+        {
+            lookingSide = leftSideLookingWall;
+        }
+
     }
 
     private void FlipUpdate()
     {
+        BoxCollider2D lookingSide;
         if (IsFacingRight())
         {
-            lookingSide = rightSide;
+            lookingSide = rightSideLookingPlayer;
         }
         else
         {
-            lookingSide = leftSide;
+            lookingSide = leftSideLookingPlayer;
         }
 
-        foreach (var layerMask in layerMasksFlip)
+        if (lookingSide.IsTouchingLayers(LayerMask.GetMask(gameSettings.PlayerLayer)))
         {
-            if (lookingSide.IsTouchingLayers(layerMask))
-            {
-                Flip();
-            }
+            Flip();
         }
     }
 
@@ -82,7 +99,7 @@ public class Enemies : MonoBehaviour
         }
 
         //animator.SetInteger("AnimState", 1);
-        rb.velocity = new Vector2(currentDirection * settings.MovementSpeed * Time.deltaTime, rb.velocity.y);
+        rb.velocity = new Vector2(currentDirection * settings.MovementSpeed * Time.fixedDeltaTime, rb.velocity.y);
     }
 
     private void Flip()
