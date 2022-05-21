@@ -138,7 +138,6 @@ public class Player : MonoBehaviour
 
     private void OnJump()
     {
-        Debug.Log("jump");
         if (!isFalling)
         {
             rb.AddForce(new Vector2(0, settings.JumpForce));
