@@ -19,5 +19,9 @@ namespace Settings
         [SerializeField]
         private string playerLayer;
         public string PlayerLayer => groundLayer;
+
+        [SerializeField]
+        private string enemiesLayer;
+        public string EnemiesLayer => enemiesLayer;
     }
 }

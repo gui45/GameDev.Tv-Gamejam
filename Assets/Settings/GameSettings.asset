@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fpsLimit: 60
   groundLayer: Ground
+  playerLayer: Player
+  enemiesLayer: Enemies
