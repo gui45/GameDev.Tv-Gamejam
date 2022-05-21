@@ -11,5 +11,9 @@ namespace Settings
         [SerializeField]
         private int fpsLimit;
         public int FpsLimit => fpsLimit;
+
+        [SerializeField]
+        private string groundLayer;
+        public string GroundLayer => groundLayer;
     }
 }

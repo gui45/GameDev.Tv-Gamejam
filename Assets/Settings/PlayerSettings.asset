@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: PlayerSettings
   m_EditorClassIdentifier: 
   jumpForce: 10
-  movementSpeed: 5
+  movementSpeed: 50
   health: 100
