@@ -13,6 +13,8 @@ public class GameEvents : MonoBehaviour
     public event Action OnPrimaryActionEvent;
     public event Action OnSecondaryActionEvent;
 
+    public event Action OnGameOverEvent;
+
     void Awake()
     {
         if (instance != null)
@@ -25,6 +27,13 @@ public class GameEvents : MonoBehaviour
         }
     }
 
+
+    // GAME EVENTS
+
+    public void OnGameOver()
+    {
+        OnGameOverEvent?.Invoke();
+    }
 
     // INPUTS
 

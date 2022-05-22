@@ -20,12 +20,12 @@ public class Player : MonoBehaviour
 
     private float health;
     private float currentSpeed;
-    private bool isOnGround;
     private float offGrounfDelay;
-    private bool isFalling;
     private float attackCoolDown;
     private bool primaryAttackFlip = false;
     private List<Enemies> enemiesInRange = new List<Enemies>();
+    private bool dying = false;
+    private PlayerStates state = PlayerStates.IDLE;
 
     private void Start()
     {
@@ -80,14 +80,46 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        CheckOnGround();
-        CheckIsFalling();
         HandleAttackCoolDown();
+        CheckOnGround();
+
+        EvalState();
     }
 
     private void FixedUpdate()
     {
         MovementUpdate();
+    }
+
+    private void EvalState()
+    {
+        if (health <0 )
+        {
+            state = PlayerStates.DYING;
+        }
+        else if (attackCoolDown > 0)
+        {
+            state = PlayerStates.ATTACKING;
+        }
+        else if (offGrounfDelay > 0 )
+        {
+            if (offGrounfDelay > settings.OffGroundDelayToFall)
+            {
+                state = PlayerStates.FALLING;
+            }
+            else
+            {
+                state = PlayerStates.OFFGROUND;
+            }
+        }
+        else if (currentSpeed != 0)
+        {
+            state = PlayerStates.MOVING;
+        }
+        else
+        {
+            state = PlayerStates.IDLE;
+        }
     }
 
     private void HandleAttackCoolDown()
@@ -153,69 +185,60 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void CheckIsFalling()
+    private void CheckOnGround()
     {
-        if (isOnGround)
+        if (feets.IsTouchingLayers(LayerMask.GetMask(gameSettings.GroundLayer)))
         {
-            offGrounfDelay = 0;
+            if (offGrounfDelay > 0)
+            {
+                animator.SetBool("Grounded", true);
+                animator.SetFloat("AirSpeedY", 0);
+                offGrounfDelay = 0;
+            }
         }
         else
         {
-            offGrounfDelay += Time.deltaTime;
-        }
-
-        if (offGrounfDelay >= settings.OffGroundDelayToFall)
-        {
-            isFalling = true;
+            offGrounfDelay += Time.fixedDeltaTime;
             animator.SetBool("Grounded", false);
             animator.SetFloat("AirSpeedY", rb.velocity.y);
         }
-        else
-        {
-            isFalling = false;
-            animator.SetBool("Grounded", true);
-            animator.SetFloat("AirSpeedY", 0);
-        }
-    }
-
-    private void CheckOnGround()
-    {
-        isOnGround = feets.IsTouchingLayers(LayerMask.GetMask(gameSettings.GroundLayer));
     }
 
     private void MovementUpdate()
     {
         //MOVE
-        if (currentSpeed != 0 && !isFalling)
+
+        if (currentSpeed != 0 && state != PlayerStates.ATTACKING)
         {
-            animator.SetInteger("AnimState", 1);
-            rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.fixedDeltaTime, rb.velocity.y);
-        }
-        else if(settings.CanMoveWhenFalling && currentSpeed != 0)
-        {
-            rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.fixedDeltaTime * settings.XSpeedModiferFalling, rb.velocity.y);
-            animator.SetInteger("AnimState", 0);
+            if (state == PlayerStates.FALLING)
+            {
+                rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.fixedDeltaTime * settings.XSpeedModiferFalling, rb.velocity.y);
+                animator.SetInteger("AnimState", 0);
+            }
+            else
+            {
+                animator.SetInteger("AnimState", 1);
+                rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.fixedDeltaTime, rb.velocity.y);
+            }
         }
         //STOP MOVING
-        else if(settings.PlayerStopsWhenKeyUp && currentSpeed == 0)
+        else
         {
             animator.SetInteger("AnimState", 0);
-
-            if (isFalling)
+            if (settings.PlayerStopsWhenKeyUp)
             {
-                if (settings.CanMoveWhenFalling)
+                if (state == PlayerStates.FALLING)
+                {
+                    if (settings.CanMoveWhenFalling)
+                    {
+                        rb.velocity = new Vector2(0, rb.velocity.y);
+                    }
+                }
+                else
                 {
                     rb.velocity = new Vector2(0, rb.velocity.y);
                 }
             }
-            else
-            {
-                rb.velocity = new Vector2(0, rb.velocity.y);
-            }
-        }
-        else
-        {
-            animator.SetInteger("AnimState", 0);
         }
     }
 
@@ -231,7 +254,7 @@ public class Player : MonoBehaviour
 
     private void OnJump()
     {
-        if (!isFalling)
+        if (state != PlayerStates.FALLING && state != PlayerStates.ATTACKING)
         {
             rb.AddForce(new Vector2(0, settings.JumpForce));
             animator.SetTrigger("Jump");
