@@ -174,7 +174,7 @@ public class Player : MonoBehaviour
 
     private void OnPrimaryAttack()
     {
-        if (attackCoolDown <= 0 && state != PlayerStates.STAGGERED)
+        if (attackCoolDown <= 0 && state != PlayerStates.STAGGERED && state != PlayerStates.DYING)
         {
             attackCoolDown += settings.PrimaryAttackCoolDown;
             if (primaryAttackFlip)
@@ -192,7 +192,7 @@ public class Player : MonoBehaviour
 
     private void OnSecondaryActtack()
     {
-        if (attackCoolDown <= 0 && state != PlayerStates.STAGGERED)
+        if (attackCoolDown <= 0 && state != PlayerStates.STAGGERED && state != PlayerStates.DYING)
         {
             animator.SetTrigger("Attack3");
             attackCoolDown += settings.SecondaryAttackCoolDown;
@@ -320,6 +320,7 @@ public class Player : MonoBehaviour
             if (staggerDelay > 0)
             {
                 animator.SetTrigger("Hurt");
+                currentSpeed = 0;
             }
 
             health -= dmg;
