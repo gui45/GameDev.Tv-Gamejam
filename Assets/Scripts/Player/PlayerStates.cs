@@ -9,5 +9,6 @@ public enum PlayerStates
     OFFGROUND = 2,
     FALLING = 3,
     ATTACKING = 4,
-    DYING = 5
+    DYING = 5,
+    STAGGERED = 6
 }

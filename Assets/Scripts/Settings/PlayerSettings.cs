@@ -13,6 +13,10 @@ namespace Settings
         private float health;
         public float Health => health;
 
+        [SerializeField]
+        private float hurtStaggerDelay;
+        public float HurtStaggerDelay => hurtStaggerDelay;
+
         [Header("Movement")]
 
         [SerializeField]

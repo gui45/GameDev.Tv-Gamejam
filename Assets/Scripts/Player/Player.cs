@@ -24,8 +24,9 @@ public class Player : MonoBehaviour
     private float attackCoolDown;
     private bool primaryAttackFlip = false;
     private List<Enemies> enemiesInRange = new List<Enemies>();
-    private bool dying = false;
     private PlayerStates state = PlayerStates.IDLE;
+    private float deadForSeconds = 0;
+    private float staggerDelay = 0;
 
     private void Start()
     {
@@ -80,22 +81,40 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        HandleAttackCoolDown();
-        CheckOnGround();
+        if (state != PlayerStates.DYING)
+        {
+            HandeHurtStagger();
+            if (state != PlayerStates.STAGGERED)
+            {
+                HandleAttackCoolDown();
+                CheckOnGround();
+            }
 
-        EvalState();
+            EvalState();
+        }
+        else
+        {
+            DyingUpdate();
+        }
     }
 
     private void FixedUpdate()
     {
-        MovementUpdate();
+        if (state != PlayerStates.DYING && state != PlayerStates.STAGGERED)
+        {
+            MovementUpdate();
+        }
     }
 
     private void EvalState()
     {
-        if (health <0 )
+        if (health <= 0 )
         {
             state = PlayerStates.DYING;
+        }
+        else if (staggerDelay > 0)
+        {
+            state = PlayerStates.STAGGERED;
         }
         else if (attackCoolDown > 0)
         {
@@ -122,6 +141,29 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void DyingUpdate()
+    {
+        AnimationClip clip = animator.GetCurrentAnimatorClipInfo(0)[0].clip;
+
+        if (clip.length <= deadForSeconds)
+        {
+            gameEvents.OnGameOver();
+            Destroy(this);
+        }
+    }
+
+    private void HandeHurtStagger()
+    {
+        if (staggerDelay > 0)
+        {
+            staggerDelay -= Time.deltaTime;
+        }
+        else
+        {
+            staggerDelay = 0;
+        }
+    }
+
     private void HandleAttackCoolDown()
     {
         if (attackCoolDown > 0)
@@ -132,7 +174,7 @@ public class Player : MonoBehaviour
 
     private void OnPrimaryAttack()
     {
-        if (attackCoolDown <= 0)
+        if (attackCoolDown <= 0 && state != PlayerStates.STAGGERED)
         {
             attackCoolDown += settings.PrimaryAttackCoolDown;
             if (primaryAttackFlip)
@@ -150,7 +192,7 @@ public class Player : MonoBehaviour
 
     private void OnSecondaryActtack()
     {
-        if (attackCoolDown <= 0)
+        if (attackCoolDown <= 0 && state != PlayerStates.STAGGERED)
         {
             animator.SetTrigger("Attack3");
             attackCoolDown += settings.SecondaryAttackCoolDown;
@@ -244,17 +286,20 @@ public class Player : MonoBehaviour
 
     private void OnMove(float speed)
     {
-        if (speed != 0)
+        if (state != PlayerStates.DYING && state != PlayerStates.STAGGERED)
         {
-            spriteRenderer.flipX = speed < 0;
-        }
+            if (speed != 0)
+            {
+                spriteRenderer.flipX = speed < 0;
+            }
 
-        currentSpeed = speed;
+            currentSpeed = speed;
+        }
     }
 
     private void OnJump()
     {
-        if (state != PlayerStates.FALLING && state != PlayerStates.ATTACKING)
+        if (state != PlayerStates.OFFGROUND && state != PlayerStates.FALLING && state != PlayerStates.ATTACKING && state != PlayerStates.DYING && state != PlayerStates.STAGGERED)
         {
             rb.AddForce(new Vector2(0, settings.JumpForce));
             animator.SetTrigger("Jump");
@@ -263,18 +308,32 @@ public class Player : MonoBehaviour
 
     private void Die()
     {
-        Destroy(gameObject);
+        animator.SetTrigger("Death");
     }
 
     public bool TakeDamage(float dmg)
     {
-        health -= dmg;
-
-        if (health <= 0)
+        if (state != PlayerStates.DYING)
         {
-            Die();
+            staggerDelay = settings.HurtStaggerDelay;
+
+            if (staggerDelay > 0)
+            {
+                animator.SetTrigger("Hurt");
+            }
+
+            health -= dmg;
+
+            if (health <= 0)
+            {
+                Die();
+                return true;
+            }
+            return false;
+        }
+        else
+        {
             return true;
         }
-        return false;
     }
 }
