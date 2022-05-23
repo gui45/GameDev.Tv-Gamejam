@@ -356,28 +356,31 @@ public class Player : MonoBehaviour
 
     public bool TakeDamage(float dmg)
     {
-        if (state != PlayerStates.DYING && state != PlayerStates.ROLLING)
-        {
-            staggerDelay = settings.HurtStaggerDelay;
-
-            if (staggerDelay > 0)
-            {
-                animator.SetTrigger("Hurt");
-                currentSpeed = 0;
-            }
-
-            health -= dmg;
-
-            if (health <= 0)
-            {
-                Die();
-                return true;
-            }
-            return false;
-        }
-        else
+        if (state == PlayerStates.DYING)
         {
             return true;
         }
+
+        if (state == PlayerStates.ROLLING)
+        {
+            return false;
+        }
+
+        staggerDelay = settings.HurtStaggerDelay;
+
+        if (staggerDelay > 0)
+        {
+            animator.SetTrigger("Hurt");
+            currentSpeed = 0;
+        }
+
+        health -= dmg;
+
+        if (health <= 0)
+        {
+            Die();
+            return true;
+        }
+        return false;
     }
 }
