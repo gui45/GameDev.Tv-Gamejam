@@ -118,14 +118,14 @@ public class Enemies : MonoBehaviour
 
         if (spriteRenderer.flipX && playerInRange.transform.position.x < transform.position.x)
         {
-            if (playerInRange.TakeDamage(damage))
+            if (playerInRange.TakeDamage(damage, 1 ))
             {
                 playerInRange = null;
             }
         }
         else if (!spriteRenderer.flipX && playerInRange.transform.position.x > transform.position.x)
         {
-            if (playerInRange.TakeDamage(damage))
+            if (playerInRange.TakeDamage(damage, -1 ))
             {
                 playerInRange = null;
             }

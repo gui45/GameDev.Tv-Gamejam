@@ -16,6 +16,8 @@ MonoBehaviour:
   hurtStaggerDelay: 0.5
   playerLayer: Player
   playerInvulnLayer: PlayerInvulnerable
+  blockedDamage: 0.8
+  pushBackForce: 3
   rollDuration: 0.55
   rollForce: 300
   playerStopsWhenKeyUp: 1

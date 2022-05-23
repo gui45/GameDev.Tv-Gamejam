@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
     private float deadForSeconds = 0;
     private float staggerDelay = 0;
     private float rollDuration = 0;
+    private bool blocking = false;
 
     private void Start()
     {
@@ -64,6 +65,7 @@ public class Player : MonoBehaviour
         gameEvents.OnRollEvent += OnRoll;
         gameEvents.onJumpEvent += OnJump;
         gameEvents.onMoveEvent += OnMove;
+        gameEvents.OnBlockEvent += OnBlock;
         gameEvents.OnPrimaryActionEvent += OnPrimaryAttack;
         gameEvents.OnSecondaryActionEvent += OnSecondaryActtack;
     }
@@ -73,6 +75,7 @@ public class Player : MonoBehaviour
         gameEvents.OnRollEvent -= OnRoll;
         gameEvents.onJumpEvent -= OnJump;
         gameEvents.onMoveEvent -= OnMove;
+        gameEvents.OnBlockEvent -= OnBlock;
         gameEvents.OnPrimaryActionEvent -= OnPrimaryAttack;
         gameEvents.OnSecondaryActionEvent -= OnSecondaryActtack;
     }
@@ -89,7 +92,7 @@ public class Player : MonoBehaviour
             HandeHurtStagger();
             HandleAttackCoolDown();
             CheckOnGround();
-
+            HandleBlocking();
             EvalState();
         }
         else
@@ -123,10 +126,6 @@ public class Player : MonoBehaviour
         {
             state = PlayerStates.ATTACKING;
         }
-        else if (rollDuration > 0)
-        {
-            state = PlayerStates.ROLLING;
-        }
         else if (offGrounfDelay > 0 )
         {
             if (offGrounfDelay > settings.OffGroundDelayToFall)
@@ -138,6 +137,15 @@ public class Player : MonoBehaviour
                 state = PlayerStates.OFFGROUND;
             }
         }
+        else if (rollDuration > 0)
+        {
+            state = PlayerStates.ROLLING;
+        }
+        else if (blocking)
+        {
+            currentSpeed = 0;
+            state = PlayerStates.BLOCKING;
+        }
         else if (currentSpeed != 0)
         {
             state = PlayerStates.MOVING;
@@ -146,6 +154,30 @@ public class Player : MonoBehaviour
         {
             state = PlayerStates.IDLE;
         }
+    }
+
+    private void HandleBlocking()
+    {
+        if (blocking && state == PlayerStates.BLOCKING)
+        {
+            if (!animator.GetBool("IdleBlock"))
+            {
+                animator.SetBool("IdleBlock", true);
+                animator.SetTrigger("Block");
+            }
+        }
+        else if(state != PlayerStates.BLOCKING)
+        {
+            if (animator.GetBool("IdleBlock"))
+            {
+                animator.SetBool("IdleBlock", false);
+            }
+        }
+    }
+
+    private void OnBlock()
+    {
+        blocking = !blocking;
     }
 
     private void DyingUpdate()
@@ -201,7 +233,7 @@ public class Player : MonoBehaviour
 
     private void OnRoll()
     {
-        if (state != PlayerStates.STAGGERED && state != PlayerStates.FALLING && state != PlayerStates.DYING && state != PlayerStates.ATTACKING)
+        if (state != PlayerStates.BLOCKING && state != PlayerStates.STAGGERED && state != PlayerStates.FALLING && state != PlayerStates.DYING && state != PlayerStates.ATTACKING)
         {
             animator.SetTrigger("Roll");
             feets.offset = new Vector2(feets.offset.x, feets.offset.y / 2);
@@ -215,7 +247,7 @@ public class Player : MonoBehaviour
 
     private void OnPrimaryAttack()
     {
-        if (attackCoolDown <= 0 && state != PlayerStates.STAGGERED && state != PlayerStates.DYING && state != PlayerStates.ROLLING)
+        if (attackCoolDown <= 0 && state != PlayerStates.BLOCKING && state != PlayerStates.STAGGERED && state != PlayerStates.DYING && state != PlayerStates.ROLLING)
         {
             attackCoolDown += settings.PrimaryAttackCoolDown;
             if (primaryAttackFlip)
@@ -233,7 +265,7 @@ public class Player : MonoBehaviour
 
     private void OnSecondaryActtack()
     {
-        if (attackCoolDown <= 0 && state != PlayerStates.STAGGERED && state != PlayerStates.DYING && state != PlayerStates.ROLLING)
+        if (attackCoolDown <= 0 && state != PlayerStates.BLOCKING && state != PlayerStates.STAGGERED && state != PlayerStates.DYING && state != PlayerStates.ROLLING)
         {
             animator.SetTrigger("Attack3");
             attackCoolDown += settings.SecondaryAttackCoolDown;
@@ -290,7 +322,7 @@ public class Player : MonoBehaviour
     private void MovementUpdate()
     {
         //MOVE
-        if (state != PlayerStates.ROLLING)
+        if (state != PlayerStates.ROLLING && state != PlayerStates.BLOCKING)
         {
             if (currentSpeed != 0 && state != PlayerStates.ATTACKING)
             {
@@ -329,7 +361,7 @@ public class Player : MonoBehaviour
 
     private void OnMove(float speed)
     {
-        if (state != PlayerStates.DYING && state != PlayerStates.STAGGERED && state != PlayerStates.ROLLING)
+        if (state != PlayerStates.BLOCKING && state != PlayerStates.DYING && state != PlayerStates.STAGGERED && state != PlayerStates.ROLLING)
         {
             if (speed != 0)
             {
@@ -342,7 +374,7 @@ public class Player : MonoBehaviour
 
     private void OnJump()
     {
-        if (state != PlayerStates.OFFGROUND && state != PlayerStates.FALLING && state != PlayerStates.ATTACKING && state != PlayerStates.DYING && state != PlayerStates.STAGGERED && state != PlayerStates.ROLLING)
+        if (state != PlayerStates.BLOCKING && state != PlayerStates.OFFGROUND && state != PlayerStates.FALLING && state != PlayerStates.ATTACKING && state != PlayerStates.DYING && state != PlayerStates.STAGGERED && state != PlayerStates.ROLLING)
         {
             rb.AddForce(new Vector2(0, settings.JumpForce));
             animator.SetTrigger("Jump");
@@ -354,33 +386,50 @@ public class Player : MonoBehaviour
         animator.SetTrigger("Death");
     }
 
-    public bool TakeDamage(float dmg)
+    public bool TakeDamage(float dmg, float xIncomingDirection)
     {
-        if (state == PlayerStates.DYING)
+        switch (state)
         {
-            return true;
+            case PlayerStates.DYING:
+                return true;
+            case PlayerStates.ROLLING:
+                return false;
+            case PlayerStates.BLOCKING:
+                float force = xIncomingDirection > 0 ?  dmg * -settings.PushBackForce : dmg * settings.PushBackForce;
+                float finalDamage = dmg * (1 - settings.BlockedDamage);
+
+                health -= finalDamage;
+
+                rb.AddForce(new Vector2(force, 0));
+
+                if (health <= 0)
+                {
+                    Die();
+                    return true;
+                }
+                else
+                {
+                    animator.SetTrigger("Block");
+                    return false;
+                }
+            default:
+                staggerDelay = settings.HurtStaggerDelay;
+
+                if (staggerDelay > 0)
+                {
+                    animator.SetTrigger("Hurt");
+                    currentSpeed = 0;
+                }
+
+                health -= dmg;
+
+                if (health <= 0)
+                {
+                    Die();
+                    return true;
+                }
+                return false;
         }
 
-        if (state == PlayerStates.ROLLING)
-        {
-            return false;
-        }
-
-        staggerDelay = settings.HurtStaggerDelay;
-
-        if (staggerDelay > 0)
-        {
-            animator.SetTrigger("Hurt");
-            currentSpeed = 0;
-        }
-
-        health -= dmg;
-
-        if (health <= 0)
-        {
-            Die();
-            return true;
-        }
-        return false;
     }
 }

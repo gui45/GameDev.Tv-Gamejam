@@ -25,6 +25,17 @@ namespace Settings
         private string playerInvulnLayer;
         public string PlayerInvulnLayer => playerInvulnLayer;
 
+        [Header("Block")]
+        [SerializeField]
+        [Range(0,1)]
+        private float blockedDamage;
+        public float BlockedDamage => blockedDamage;
+
+        [SerializeField]
+        [Tooltip("Force * dommage qui arrivent")]
+        private float pushBackForce;
+        public float PushBackForce => pushBackForce;
+
         [Header("Roll")]
         [SerializeField]
         private float rollDuration;

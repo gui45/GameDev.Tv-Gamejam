@@ -13,6 +13,7 @@ public class GameEvents : MonoBehaviour
     public event Action OnPrimaryActionEvent;
     public event Action OnSecondaryActionEvent;
     public event Action OnRollEvent;
+    public event Action OnBlockEvent;
 
     public event Action OnGameOverEvent;
 
@@ -38,6 +39,10 @@ public class GameEvents : MonoBehaviour
 
     // INPUTS
 
+    public void OnBlock()
+    {
+        OnBlockEvent?.Invoke();
+    }
 
     public void OnRoll()
     {
