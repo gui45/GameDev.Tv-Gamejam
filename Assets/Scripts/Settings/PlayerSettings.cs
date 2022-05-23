@@ -17,6 +17,23 @@ namespace Settings
         private float hurtStaggerDelay;
         public float HurtStaggerDelay => hurtStaggerDelay;
 
+        [SerializeField]
+        private string playerLayer;
+        public string PlayerLayer => playerLayer;
+
+        [SerializeField]
+        private string playerInvulnLayer;
+        public string PlayerInvulnLayer => playerInvulnLayer;
+
+        [Header("Roll")]
+        [SerializeField]
+        private float rollDuration;
+        public float RollDuration => rollDuration;
+
+        [SerializeField]
+        private float rollForce;
+        public float RollForce => rollForce;
+
         [Header("Movement")]
 
         [SerializeField]

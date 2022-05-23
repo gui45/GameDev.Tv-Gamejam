@@ -10,5 +10,6 @@ public enum PlayerStates
     FALLING = 3,
     ATTACKING = 4,
     DYING = 5,
-    STAGGERED = 6
+    STAGGERED = 6,
+    ROLLING = 7
 }

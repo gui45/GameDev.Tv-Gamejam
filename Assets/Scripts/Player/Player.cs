@@ -11,8 +11,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private PlayerSettings settings;
     private GameSettings gameSettings;
-    [SerializeField]
-    private Collider2D feets;
+    private CapsuleCollider2D feets;
     private Animator animator;
     private Rigidbody2D rb;
     private GameEvents gameEvents;
@@ -27,9 +26,11 @@ public class Player : MonoBehaviour
     private PlayerStates state = PlayerStates.IDLE;
     private float deadForSeconds = 0;
     private float staggerDelay = 0;
+    private float rollDuration = 0;
 
     private void Start()
     {
+        feets = GetComponent<CapsuleCollider2D>();
         gameSettings = SettingsRepository.instance.GameSettings;
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -60,6 +61,7 @@ public class Player : MonoBehaviour
 
     private void AddEvents()
     {
+        gameEvents.OnRollEvent += OnRoll;
         gameEvents.onJumpEvent += OnJump;
         gameEvents.onMoveEvent += OnMove;
         gameEvents.OnPrimaryActionEvent += OnPrimaryAttack;
@@ -68,6 +70,7 @@ public class Player : MonoBehaviour
 
     private void RemoveEvents()
     {
+        gameEvents.OnRollEvent -= OnRoll;
         gameEvents.onJumpEvent -= OnJump;
         gameEvents.onMoveEvent -= OnMove;
         gameEvents.OnPrimaryActionEvent -= OnPrimaryAttack;
@@ -84,11 +87,8 @@ public class Player : MonoBehaviour
         if (state != PlayerStates.DYING)
         {
             HandeHurtStagger();
-            if (state != PlayerStates.STAGGERED)
-            {
-                HandleAttackCoolDown();
-                CheckOnGround();
-            }
+            HandleAttackCoolDown();
+            CheckOnGround();
 
             EvalState();
         }
@@ -100,9 +100,10 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (state != PlayerStates.DYING && state != PlayerStates.STAGGERED)
+        if (state != PlayerStates.DYING)
         {
             MovementUpdate();
+            HandleRoll();
         }
     }
 
@@ -114,11 +115,17 @@ public class Player : MonoBehaviour
         }
         else if (staggerDelay > 0)
         {
+            rollDuration = 0;
+            currentSpeed = 0;
             state = PlayerStates.STAGGERED;
         }
         else if (attackCoolDown > 0)
         {
             state = PlayerStates.ATTACKING;
+        }
+        else if (rollDuration > 0)
+        {
+            state = PlayerStates.ROLLING;
         }
         else if (offGrounfDelay > 0 )
         {
@@ -172,9 +179,43 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void HandleRoll()
+    {
+        if (rollDuration > 0)
+        {
+            rollDuration -= Time.deltaTime;
+            float xForce = spriteRenderer.flipX ? -settings.RollForce : settings.RollForce;
+            rb.velocity = new Vector2(xForce * Time.fixedDeltaTime, rb.velocity.y);
+
+            if (rollDuration <= 0)
+            {
+                rollDuration = 0;
+
+                feets.offset = new Vector2(feets.offset.x, feets.offset.y * 2);
+                feets.size = new Vector2(feets.size.x, feets.size.y * 2);
+
+                gameObject.layer = LayerMask.NameToLayer(settings.PlayerLayer);
+            }
+        }
+    }
+
+    private void OnRoll()
+    {
+        if (state != PlayerStates.STAGGERED && state != PlayerStates.FALLING && state != PlayerStates.DYING && state != PlayerStates.ATTACKING)
+        {
+            animator.SetTrigger("Roll");
+            feets.offset = new Vector2(feets.offset.x, feets.offset.y / 2);
+            feets.size = new Vector2(feets.size.x, feets.size.y / 2);
+
+            rollDuration = settings.RollDuration;
+
+            gameObject.layer = LayerMask.NameToLayer(settings.PlayerInvulnLayer);
+        }
+    }
+
     private void OnPrimaryAttack()
     {
-        if (attackCoolDown <= 0 && state != PlayerStates.STAGGERED && state != PlayerStates.DYING)
+        if (attackCoolDown <= 0 && state != PlayerStates.STAGGERED && state != PlayerStates.DYING && state != PlayerStates.ROLLING)
         {
             attackCoolDown += settings.PrimaryAttackCoolDown;
             if (primaryAttackFlip)
@@ -192,7 +233,7 @@ public class Player : MonoBehaviour
 
     private void OnSecondaryActtack()
     {
-        if (attackCoolDown <= 0 && state != PlayerStates.STAGGERED && state != PlayerStates.DYING)
+        if (attackCoolDown <= 0 && state != PlayerStates.STAGGERED && state != PlayerStates.DYING && state != PlayerStates.ROLLING)
         {
             animator.SetTrigger("Attack3");
             attackCoolDown += settings.SecondaryAttackCoolDown;
@@ -249,36 +290,38 @@ public class Player : MonoBehaviour
     private void MovementUpdate()
     {
         //MOVE
-
-        if (currentSpeed != 0 && state != PlayerStates.ATTACKING)
+        if (state != PlayerStates.ROLLING)
         {
-            if (state == PlayerStates.FALLING)
-            {
-                rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.fixedDeltaTime * settings.XSpeedModiferFalling, rb.velocity.y);
-                animator.SetInteger("AnimState", 0);
-            }
-            else
-            {
-                animator.SetInteger("AnimState", 1);
-                rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.fixedDeltaTime, rb.velocity.y);
-            }
-        }
-        //STOP MOVING
-        else
-        {
-            animator.SetInteger("AnimState", 0);
-            if (settings.PlayerStopsWhenKeyUp)
+            if (currentSpeed != 0 && state != PlayerStates.ATTACKING)
             {
                 if (state == PlayerStates.FALLING)
                 {
-                    if (settings.CanMoveWhenFalling)
-                    {
-                        rb.velocity = new Vector2(0, rb.velocity.y);
-                    }
+                    rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.fixedDeltaTime * settings.XSpeedModiferFalling, rb.velocity.y);
+                    animator.SetInteger("AnimState", 0);
                 }
                 else
                 {
-                    rb.velocity = new Vector2(0, rb.velocity.y);
+                    animator.SetInteger("AnimState", 1);
+                    rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.fixedDeltaTime, rb.velocity.y);
+                }
+            }
+            //STOP MOVING
+            else
+            {
+                animator.SetInteger("AnimState", 0);
+                if (settings.PlayerStopsWhenKeyUp)
+                {
+                    if (state == PlayerStates.FALLING)
+                    {
+                        if (settings.CanMoveWhenFalling)
+                        {
+                            rb.velocity = new Vector2(0, rb.velocity.y);
+                        }
+                    }
+                    else
+                    {
+                        rb.velocity = new Vector2(0, rb.velocity.y);
+                    }
                 }
             }
         }
@@ -286,7 +329,7 @@ public class Player : MonoBehaviour
 
     private void OnMove(float speed)
     {
-        if (state != PlayerStates.DYING && state != PlayerStates.STAGGERED)
+        if (state != PlayerStates.DYING && state != PlayerStates.STAGGERED && state != PlayerStates.ROLLING)
         {
             if (speed != 0)
             {
@@ -299,7 +342,7 @@ public class Player : MonoBehaviour
 
     private void OnJump()
     {
-        if (state != PlayerStates.OFFGROUND && state != PlayerStates.FALLING && state != PlayerStates.ATTACKING && state != PlayerStates.DYING && state != PlayerStates.STAGGERED)
+        if (state != PlayerStates.OFFGROUND && state != PlayerStates.FALLING && state != PlayerStates.ATTACKING && state != PlayerStates.DYING && state != PlayerStates.STAGGERED && state != PlayerStates.ROLLING)
         {
             rb.AddForce(new Vector2(0, settings.JumpForce));
             animator.SetTrigger("Jump");
@@ -313,7 +356,7 @@ public class Player : MonoBehaviour
 
     public bool TakeDamage(float dmg)
     {
-        if (state != PlayerStates.DYING)
+        if (state != PlayerStates.DYING && state != PlayerStates.ROLLING)
         {
             staggerDelay = settings.HurtStaggerDelay;
 
