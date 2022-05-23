@@ -202,7 +202,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: 90b6ae8f952cde14aa170ffbc9dd78c6, type: 2}
-  feets: {fileID: 5476077599246437538}
 --- !u!70 &5476077599246437538
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -235,5 +234,5 @@ MonoBehaviour:
   - {r: 0.16862746, g: 0.28235295, b: 0.5529412, a: 1}
   - {r: 0.015686275, g: 0.14901961, b: 0.3372549, a: 0}
   m_newColors:
-  - {r: 1, g: 0, b: 0, a: 0}
-  - {r: 0.3019608, g: 0.3019608, b: 0.3019608, a: 0}
+  - {r: 0.16851687, g: 0.4433962, b: 0.06971636, a: 0}
+  - {r: 0.10061922, g: 0.2735849, b: 0.09721726, a: 0}

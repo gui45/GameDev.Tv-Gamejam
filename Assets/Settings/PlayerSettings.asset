@@ -18,8 +18,8 @@ MonoBehaviour:
   playerInvulnLayer: PlayerInvulnerable
   blockedDamage: 0.8
   pushBackForce: 3
-  rollDuration: 0.55
-  rollForce: 300
+  rollDuration: 0.7
+  rollForce: 400
   playerStopsWhenKeyUp: 1
   movementSpeed: 150
   jumpForce: 500
