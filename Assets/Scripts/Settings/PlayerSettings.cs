@@ -45,6 +45,10 @@ namespace Settings
         private float rollForce;
         public float RollForce => rollForce;
 
+        [SerializeField]
+        private float rollCoolDown;
+        public float RollCoolDown => rollCoolDown;
+
         [Header("Movement")]
 
         [SerializeField]

@@ -20,6 +20,7 @@ MonoBehaviour:
   pushBackForce: 3
   rollDuration: 0.7
   rollForce: 400
+  rollCoolDown: 2
   playerStopsWhenKeyUp: 1
   movementSpeed: 150
   jumpForce: 500

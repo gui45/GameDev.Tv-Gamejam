@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     private float staggerDelay = 0;
     private float rollDuration = 0;
     private bool blocking = false;
+    private float rollCoolDown = 0;
 
     private void Start()
     {
@@ -224,13 +225,23 @@ public class Player : MonoBehaviour
                 feets.size = new Vector2(feets.size.x, feets.size.y * 2);
 
                 gameObject.layer = LayerMask.NameToLayer(settings.PlayerLayer);
+
+                rollCoolDown = settings.RollCoolDown;
             }
+        }
+
+        if (rollCoolDown > 0)
+        {
+            rollCoolDown -= Time.deltaTime;
+        }else
+        {
+            rollCoolDown = 0;
         }
     }
 
     private void OnRoll()
     {
-        if (state != PlayerStates.BLOCKING && state != PlayerStates.STAGGERED && state != PlayerStates.FALLING && state != PlayerStates.DYING && state != PlayerStates.ATTACKING)
+        if (state != PlayerStates.ROLLING && rollCoolDown <= 0 && state != PlayerStates.BLOCKING && state != PlayerStates.STAGGERED && state != PlayerStates.FALLING && state != PlayerStates.DYING && state != PlayerStates.ATTACKING)
         {
             animator.SetTrigger("Roll");
             feets.offset = new Vector2(feets.offset.x, feets.offset.y / 2);
