@@ -181,7 +181,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            animator.SetTrigger("Idle");
+            animator.SetTrigger("Revive");
         }
     }
 
