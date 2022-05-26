@@ -6,6 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(CapsuleCollider2D))]
 public class Player : MonoBehaviour
 {
     [SerializeField]
@@ -29,6 +30,7 @@ public class Player : MonoBehaviour
     private float rollDuration = 0;
     private bool blocking = false;
     private float rollCoolDown = 0;
+    private bool ghost = false;
 
     private void Start()
     {
@@ -67,6 +69,8 @@ public class Player : MonoBehaviour
         gameEvents.onJumpEvent += OnJump;
         gameEvents.onMoveEvent += OnMove;
         gameEvents.OnBlockEvent += OnBlock;
+        gameEvents.OnGameOverEvent += OnGameOver;
+        gameEvents.OnSwitchModeEvent += OnSwitchMode;
         gameEvents.OnPrimaryActionEvent += OnPrimaryAttack;
         gameEvents.OnSecondaryActionEvent += OnSecondaryActtack;
     }
@@ -77,6 +81,8 @@ public class Player : MonoBehaviour
         gameEvents.onJumpEvent -= OnJump;
         gameEvents.onMoveEvent -= OnMove;
         gameEvents.OnBlockEvent -= OnBlock;
+        gameEvents.OnGameOverEvent -= OnGameOver;
+        gameEvents.OnSwitchModeEvent -= OnSwitchMode;
         gameEvents.OnPrimaryActionEvent -= OnPrimaryAttack;
         gameEvents.OnSecondaryActionEvent -= OnSecondaryActtack;
     }
@@ -90,15 +96,14 @@ public class Player : MonoBehaviour
     {
         if (state != PlayerStates.DYING)
         {
-            HandeHurtStagger();
-            HandleAttackCoolDown();
-            CheckOnGround();
-            HandleBlocking();
             EvalState();
-        }
-        else
-        {
-            DyingUpdate();
+            if (state != PlayerStates.GHOST)
+            {
+                HandeHurtStagger();
+                HandleAttackCoolDown();
+                CheckOnGround();
+                HandleBlocking();
+            }
         }
     }
 
@@ -111,11 +116,21 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void OnGameOver()
+    {
+        Destroy(this);
+    }
+
     private void EvalState()
     {
+
         if (health <= 0 )
         {
             state = PlayerStates.DYING;
+        }
+        else if (ghost)
+        {
+            state = PlayerStates.GHOST;
         }
         else if (staggerDelay > 0)
         {
@@ -156,6 +171,20 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void OnSwitchMode()
+    {
+        ghost = !ghost;
+
+        if (ghost)
+        {
+            animator.SetTrigger("Death");
+        }
+        else
+        {
+            animator.SetTrigger("Idle");
+        }
+    }
+
     private void HandleBlocking()
     {
         if (blocking && state == PlayerStates.BLOCKING)
@@ -177,17 +206,9 @@ public class Player : MonoBehaviour
 
     private void OnBlock()
     {
-        blocking = !blocking;
-    }
-
-    private void DyingUpdate()
-    {
-        AnimationClip clip = animator.GetCurrentAnimatorClipInfo(0)[0].clip;
-
-        if (clip.length <= deadForSeconds)
+        if (state != PlayerStates.GHOST)
         {
-            gameEvents.OnGameOver();
-            Destroy(this);
+            blocking = !blocking;
         }
     }
 
@@ -241,7 +262,7 @@ public class Player : MonoBehaviour
 
     private void OnRoll()
     {
-        if (state != PlayerStates.ROLLING && rollCoolDown <= 0 && state != PlayerStates.BLOCKING && state != PlayerStates.STAGGERED && state != PlayerStates.FALLING && state != PlayerStates.DYING && state != PlayerStates.ATTACKING)
+        if (state != PlayerStates.GHOST && state != PlayerStates.ROLLING && rollCoolDown <= 0 && state != PlayerStates.BLOCKING && state != PlayerStates.STAGGERED && state != PlayerStates.FALLING && state != PlayerStates.DYING && state != PlayerStates.ATTACKING)
         {
             animator.SetTrigger("Roll");
             feets.offset = new Vector2(feets.offset.x, feets.offset.y / 2);
@@ -258,7 +279,7 @@ public class Player : MonoBehaviour
 
     private void OnPrimaryAttack()
     {
-        if (attackCoolDown <= 0 && state != PlayerStates.BLOCKING && state != PlayerStates.STAGGERED && state != PlayerStates.DYING && state != PlayerStates.ROLLING)
+        if (state != PlayerStates.GHOST && attackCoolDown <= 0 && state != PlayerStates.BLOCKING && state != PlayerStates.STAGGERED && state != PlayerStates.DYING && state != PlayerStates.ROLLING)
         {
             attackCoolDown += settings.PrimaryAttackCoolDown;
             if (primaryAttackFlip)
@@ -276,7 +297,7 @@ public class Player : MonoBehaviour
 
     private void OnSecondaryActtack()
     {
-        if (attackCoolDown <= 0 && state != PlayerStates.BLOCKING && state != PlayerStates.STAGGERED && state != PlayerStates.DYING && state != PlayerStates.ROLLING)
+        if (state != PlayerStates.GHOST && attackCoolDown <= 0 && state != PlayerStates.BLOCKING && state != PlayerStates.STAGGERED && state != PlayerStates.DYING && state != PlayerStates.ROLLING)
         {
             animator.SetTrigger("Attack3");
             attackCoolDown += settings.SecondaryAttackCoolDown;
@@ -333,7 +354,7 @@ public class Player : MonoBehaviour
     private void MovementUpdate()
     {
         //MOVE
-        if (state != PlayerStates.ROLLING && state != PlayerStates.BLOCKING)
+        if (state != PlayerStates.GHOST && state != PlayerStates.ROLLING && state != PlayerStates.BLOCKING)
         {
             if (currentSpeed != 0 && state != PlayerStates.ATTACKING)
             {
@@ -378,7 +399,7 @@ public class Player : MonoBehaviour
 
     private void OnJump()
     {
-        if (state != PlayerStates.BLOCKING && state != PlayerStates.OFFGROUND && state != PlayerStates.FALLING && state != PlayerStates.ATTACKING && state != PlayerStates.DYING && state != PlayerStates.STAGGERED && state != PlayerStates.ROLLING)
+        if (state != PlayerStates.GHOST && state != PlayerStates.BLOCKING && state != PlayerStates.OFFGROUND && state != PlayerStates.FALLING && state != PlayerStates.ATTACKING && state != PlayerStates.DYING && state != PlayerStates.STAGGERED && state != PlayerStates.ROLLING)
         {
             rb.AddForce(new Vector2(0, settings.JumpForce));
             animator.SetTrigger("Jump");
@@ -387,6 +408,7 @@ public class Player : MonoBehaviour
 
     private void Die()
     {
+        gameEvents.OnGameOver();
         animator.SetTrigger("Death");
     }
 

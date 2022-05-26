@@ -2,16 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PlayerStates
+public enum PlayerGhostStates
 {
     IDLE = 0,
     MOVING = 1,
     OFFGROUND = 2,
     FALLING = 3,
-    ATTACKING = 4,
-    DYING = 5,
-    STAGGERED = 6,
-    ROLLING = 7,
-    BLOCKING = 8,
-    GHOST= 9
+    DYING = 4,
+    NOTGHOST = 5
 }

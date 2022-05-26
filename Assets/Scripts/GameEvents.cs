@@ -14,6 +14,7 @@ public class GameEvents : MonoBehaviour
     public event Action OnSecondaryActionEvent;
     public event Action OnRollEvent;
     public event Action OnBlockEvent;
+    public event Action OnSwitchModeEvent;
 
     public event Action OnGameOverEvent;
 
@@ -38,6 +39,11 @@ public class GameEvents : MonoBehaviour
     }
 
     // INPUTS
+
+    public void OnSwitchMode()
+    {
+        OnSwitchModeEvent?.Invoke();
+    }
 
     public void OnBlock()
     {
