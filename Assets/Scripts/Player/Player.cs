@@ -245,7 +245,7 @@ public class Player : MonoBehaviour
                 feets.offset = new Vector2(feets.offset.x, feets.offset.y * 2);
                 feets.size = new Vector2(feets.size.x, feets.size.y * 2);
 
-                gameObject.layer = LayerMask.NameToLayer(settings.PlayerLayer);
+                gameObject.layer = LayerMask.NameToLayer(gameSettings.PlayerLayer);
 
                 rollCoolDown = settings.RollCoolDown;
             }
@@ -270,7 +270,7 @@ public class Player : MonoBehaviour
 
             rollDuration = settings.RollDuration;
 
-            gameObject.layer = LayerMask.NameToLayer(settings.PlayerInvulnLayer);
+            gameObject.layer = LayerMask.NameToLayer(gameSettings.PlayerInvulnLayer);
 
             float xForce = spriteRenderer.flipX ? -settings.RollForce : settings.RollForce;
             rb.AddForce(new Vector2(xForce, 0));

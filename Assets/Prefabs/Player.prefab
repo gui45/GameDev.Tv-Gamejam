@@ -180,6 +180,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayeGhost
       objectReference: {fileID: 0}
+    - target: {fileID: 7435594613996694286, guid: 5d85ab9e00ac230458bc8a73b1acf090, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8878411839751571584, guid: 5d85ab9e00ac230458bc8a73b1acf090, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d85ab9e00ac230458bc8a73b1acf090, type: 3}
 --- !u!4 &3540222112351618688 stripped

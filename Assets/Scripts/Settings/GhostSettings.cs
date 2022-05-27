@@ -13,10 +13,6 @@ namespace Settings
         private float health;
         public float Health => health;
 
-        [SerializeField]
-        private string playerGhostLayer;
-        public string PlayerGhostLayer => playerGhostLayer;
-
         [Header("Movement")]
 
         [SerializeField]

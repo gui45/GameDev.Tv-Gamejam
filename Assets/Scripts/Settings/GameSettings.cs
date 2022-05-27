@@ -12,16 +12,26 @@ namespace Settings
         private int fpsLimit;
         public int FpsLimit => fpsLimit;
 
-        [SerializeField]
-        private string groundLayer;
-        public string GroundLayer => groundLayer;
+        [Header("Layers")]
 
         [SerializeField]
         private string playerLayer;
         public string PlayerLayer => playerLayer;
 
         [SerializeField]
+        private string playerInvulnLayer;
+        public string PlayerInvulnLayer => playerInvulnLayer;
+
+        [SerializeField]
+        private string groundLayer;
+        public string GroundLayer => groundLayer;
+
+        [SerializeField]
         private string enemiesLayer;
         public string EnemiesLayer => enemiesLayer;
+
+        [SerializeField]
+        private string playerGhostLayer;
+        public string PlayerGhostLayer => playerGhostLayer;
     }
 }

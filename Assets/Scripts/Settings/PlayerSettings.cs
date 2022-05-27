@@ -17,14 +17,6 @@ namespace Settings
         private float hurtStaggerDelay;
         public float HurtStaggerDelay => hurtStaggerDelay;
 
-        [SerializeField]
-        private string playerLayer;
-        public string PlayerLayer => playerLayer;
-
-        [SerializeField]
-        private string playerInvulnLayer;
-        public string PlayerInvulnLayer => playerInvulnLayer;
-
         [Header("Block")]
         [SerializeField]
         [Range(0,1)]
