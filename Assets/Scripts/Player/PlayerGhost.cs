@@ -37,7 +37,6 @@ public class PlayerGhost : MonoBehaviour
 
         health = settings.Health;
         spriteRenderer.enabled = false;
-        capsuleCollider.enabled = false;
     }
 
     private void Update()
@@ -129,22 +128,19 @@ public class PlayerGhost : MonoBehaviour
         //MOVE
         if (currentSpeed != 0)
         {
-            spriteRenderer.flipX = currentSpeed < 0;
+            spriteRenderer.flipX = currentSpeed > 0;
             if (state == PlayerGhostStates.FALLING)
             {
                 rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.fixedDeltaTime * settings.XSpeedModiferFalling, rb.velocity.y);
-                animator.SetInteger("AnimState", 0);
             }
             else
             {
-                animator.SetInteger("AnimState", 1);
                 rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.fixedDeltaTime, rb.velocity.y);
             }
         }
         //STOP MOVING
         else
         {
-            animator.SetInteger("AnimState", 0);
             if (settings.PlayerStopsWhenKeyUp)
             {
                 if (state == PlayerGhostStates.FALLING)
@@ -169,12 +165,10 @@ public class PlayerGhost : MonoBehaviour
         if (ghost)
         {
             spriteRenderer.enabled = true;
-            capsuleCollider.enabled = true;
         }
         else
         {
             spriteRenderer.enabled = false;
-            capsuleCollider.enabled = false;
         }
     }
 
@@ -188,7 +182,6 @@ public class PlayerGhost : MonoBehaviour
         if (state != PlayerGhostStates.OFFGROUND && state != PlayerGhostStates.FALLING && state != PlayerGhostStates.DYING)
         {
             rb.AddForce(new Vector2(0, settings.JumpForce));
-            animator.SetTrigger("Jump");
         }
     }
     public bool TakeDamage(float dmg, float xIncomingDirection)
@@ -202,7 +195,6 @@ public class PlayerGhost : MonoBehaviour
         }
         else
         {
-            animator.SetTrigger("Block");
             return false;
         }
     }
