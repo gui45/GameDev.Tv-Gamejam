@@ -7,6 +7,7 @@ using System;
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(AudioSource))]
 public class Enemies : MonoBehaviour
 {
     [SerializeField]
@@ -16,6 +17,8 @@ public class Enemies : MonoBehaviour
     private GameEvents gameEvents;
     private GameSettings gameSettings;
     private SpriteRenderer spriteRenderer;
+    private AudioSource audioSource;
+
 
     [SerializeField]
     private BoxCollider2D rightSideLookingWall;
@@ -31,9 +34,16 @@ public class Enemies : MonoBehaviour
     private float currentDirection;
     private bool canAttack;
     private bool isAttacking;
+    private bool isDead;
 
     [SerializeField]
     LayerMask[] layerMasksFlip;
+
+    [SerializeField]
+    LayerMask newLayerOnDeath;
+
+    [SerializeField]
+    GameObject[] gameObjectsToDesactiveOnDeath;
 
     // Start is called before the first frame update
     void Start()
@@ -42,10 +52,14 @@ public class Enemies : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
 
         health = settings.Health;
         isAttacking = false;
         canAttack = true;
+        isDead = false;
+        animator.SetBool("IsDead", false);
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -69,8 +83,12 @@ public class Enemies : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (isDead)
+            return;
+
         if(DetectPlayerAttack1() && canAttack)
         {
+            StopClip();
             PrepAttack1();
         }
 
@@ -147,6 +165,7 @@ public class Enemies : MonoBehaviour
         if (DetectPlayerAttack1())
         {
             animator.SetBool("IsAttacking", true);
+            PlayClip(settings.PrimaryAttackSound);
         }
         else
         {
@@ -178,6 +197,8 @@ public class Enemies : MonoBehaviour
 
     private void MovementUpdate()
     {
+        LoopClip(settings.MoveSound);
+
         if (IsFacingRight())
         {
             currentDirection = 1;
@@ -205,15 +226,56 @@ public class Enemies : MonoBehaviour
     {
         health -= dmg;
 
+        animator.SetTrigger("TakeDamage");
+        animator.SetBool("IsAttacking", false);
+        isAttacking = false;
+
         if (health <= 0)
         {
             Die();
             return true;
         }
+
+        PlayClip(settings.HurtSound);
         return false;
     }
     private void Die()
     {
-        //Destroy(gameObject);
+        StopClip();
+        isDead = true;
+        PlayClip(settings.dieSound);
+        animator.SetTrigger("Die");
+
+        gameObject.layer = LayerMask.NameToLayer(gameSettings.DeadBodyLayer);
+
+        foreach(var obj in gameObjectsToDesactiveOnDeath)
+        {
+            obj.SetActive(false);
+        }
     }
+
+    private void PlayClip(AudioClip clip)
+    {
+        audioSource.clip = clip;
+        audioSource.loop = false;
+        audioSource.Play();
+    }
+
+    private void LoopClip(AudioClip clip)
+    {
+        if (audioSource.clip != clip || !audioSource.isPlaying)
+        {
+            audioSource.clip = clip;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
+    }
+
+    private void StopClip()
+    {
+        audioSource.Stop();
+        audioSource.loop = false;
+        audioSource.clip = null;
+    }
+
 }

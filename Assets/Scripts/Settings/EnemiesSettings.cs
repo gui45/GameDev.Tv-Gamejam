@@ -22,5 +22,22 @@ namespace Settings
         [SerializeField]
         private float timeBetweenAttack;
         public float TimeBetweenAttack => timeBetweenAttack;
+
+
+        [SerializeField]
+        private AudioClip primaryAttackSound;
+        public AudioClip PrimaryAttackSound => primaryAttackSound;
+
+        [SerializeField]
+        private AudioClip hurtSound;
+        public AudioClip HurtSound => hurtSound;
+
+        [SerializeField]
+        private AudioClip dieClip;
+        public AudioClip dieSound => dieClip;
+
+        [SerializeField]
+        private AudioClip moveSound;
+        public AudioClip MoveSound => moveSound;
     }
 }

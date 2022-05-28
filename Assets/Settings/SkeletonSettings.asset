@@ -16,3 +16,7 @@ MonoBehaviour:
   health: 40
   attack1Damage: 50
   timeBetweenAttack: 0.5
+  primaryAttackSound: {fileID: 8300000, guid: 0db81b61afcdb2e469705744845593bd, type: 3}
+  hurtSound: {fileID: 8300000, guid: ccb6cb82ec50f77458c27c997d9f559d, type: 3}
+  dieClip: {fileID: 8300000, guid: 0ea6df40dc29ac74281be9d4832d39c6, type: 3}
+  moveSound: {fileID: 0}
