@@ -7,6 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(CapsuleCollider2D))]
+[RequireComponent(typeof(AudioSource))]
 public class Player : MonoBehaviour
 {
     [SerializeField]
@@ -17,6 +18,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private GameEvents gameEvents;
     private SpriteRenderer spriteRenderer;
+    private AudioSource audioSource;
 
     private float health;
     private float currentSpeed;
@@ -40,6 +42,8 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         gameEvents = GameEvents.instance;
+        audioSource = GetComponent<AudioSource>();
+
         AddEvents();
 
         health = settings.Health;
@@ -104,6 +108,11 @@ public class Player : MonoBehaviour
                 CheckOnGround();
                 HandleBlocking();
             }
+        }
+
+        if (state != PlayerStates.MOVING && audioSource.clip == settings.MoveSound)
+        {
+            StopClip();
         }
     }
 
@@ -193,6 +202,11 @@ public class Player : MonoBehaviour
             {
                 animator.SetBool("IdleBlock", true);
                 animator.SetTrigger("Block");
+
+                if (blocking)
+                {
+                    PlayClip(settings.BlockedSound);
+                }
             }
         }
         else if(state != PlayerStates.BLOCKING)
@@ -206,10 +220,7 @@ public class Player : MonoBehaviour
 
     private void OnBlock()
     {
-        if (state != PlayerStates.GHOST)
-        {
-            blocking = !blocking;
-        }
+        blocking = !blocking;
     }
 
     private void HandeHurtStagger()
@@ -274,6 +285,7 @@ public class Player : MonoBehaviour
 
             float xForce = spriteRenderer.flipX ? -settings.RollForce : settings.RollForce;
             rb.AddForce(new Vector2(xForce, 0));
+            PlayClip(settings.RollSound);
         }
     }
 
@@ -292,6 +304,7 @@ public class Player : MonoBehaviour
             }
             primaryAttackFlip = !primaryAttackFlip;
             CauseDamage(settings.PrimaryAttackDamage);
+            PlayClip(settings.PrimaryAttackSound);
         }
     }
 
@@ -302,6 +315,7 @@ public class Player : MonoBehaviour
             animator.SetTrigger("Attack3");
             attackCoolDown += settings.SecondaryAttackCoolDown;
             CauseDamage(settings.SecondaryAttackDamage);
+            PlayClip(settings.SecodaryAttackSound);
         }
     }
 
@@ -341,6 +355,7 @@ public class Player : MonoBehaviour
                 animator.SetBool("Grounded", true);
                 animator.SetFloat("AirSpeedY", 0);
                 offGrounfDelay = 0;
+                PlayClip(settings.LandingSound);
             }
         }
         else
@@ -361,11 +376,13 @@ public class Player : MonoBehaviour
                 spriteRenderer.flipX = currentSpeed < 0;
                 if (state == PlayerStates.FALLING)
                 {
+
                     rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.fixedDeltaTime * settings.XSpeedModiferFalling, rb.velocity.y);
                     animator.SetInteger("AnimState", 0);
                 }
                 else
                 {
+                    LoopClip(settings.MoveSound);
                     animator.SetInteger("AnimState", 1);
                     rb.velocity = new Vector2(currentSpeed * settings.MovementSpeed * Time.fixedDeltaTime, rb.velocity.y);
                 }
@@ -373,6 +390,10 @@ public class Player : MonoBehaviour
             //STOP MOVING
             else
             {
+                if (audioSource.clip == settings.MoveSound)
+                {
+                    StopClip();
+                }
                 animator.SetInteger("AnimState", 0);
                 if (settings.PlayerStopsWhenKeyUp)
                 {
@@ -390,6 +411,13 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            if (audioSource.clip == settings.MoveSound)
+            {
+                StopClip();
+            }
+        }
     }
 
     private void OnMove(float speed)
@@ -403,6 +431,7 @@ public class Player : MonoBehaviour
         {
             rb.AddForce(new Vector2(0, settings.JumpForce));
             animator.SetTrigger("Jump");
+            PlayClip(settings.JumpSound);
         }
     }
 
@@ -452,6 +481,7 @@ public class Player : MonoBehaviour
         }
         else
         {
+            PlayClip(settings.BlockedSound);
             animator.SetTrigger("Block");
             return false;
         }
@@ -474,6 +504,33 @@ public class Player : MonoBehaviour
             Die();
             return true;
         }
+
+        PlayClip(settings.HurtSound);
+
         return false;
+    }
+
+    private void PlayClip(AudioClip clip)
+    {
+        audioSource.clip = clip;
+        audioSource.loop = false;
+        audioSource.Play();
+    }
+
+    private void LoopClip(AudioClip clip)
+    {
+        if (audioSource.clip != clip || !audioSource.isPlaying)
+        {
+            audioSource.clip = clip;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
+    }
+
+    private void StopClip()
+    {
+        audioSource.Stop();
+        audioSource.loop = false;
+        audioSource.clip = null;
     }
 }

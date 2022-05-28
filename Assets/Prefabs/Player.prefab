@@ -103,6 +103,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HeroKnight
       objectReference: {fileID: 0}
+    - target: {fileID: 8736573660163961275, guid: e5f474c11f1a4b04fa97a785ade761aa, type: 3}
+      propertyPath: m_Pitch
+      value: 0.73
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5f474c11f1a4b04fa97a785ade761aa, type: 3}
 --- !u!114 &1306576391898406742 stripped
@@ -140,6 +144,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 2039545986, guid: 84639f781efd4724aaa486429b05f39a, type: 3}
+    - target: {fileID: 1733191424294375601, guid: 5d85ab9e00ac230458bc8a73b1acf090, type: 3}
+      propertyPath: m_Color.a
+      value: 0.6784314
+      objectReference: {fileID: 0}
     - target: {fileID: 1733191424294375601, guid: 5d85ab9e00ac230458bc8a73b1acf090, type: 3}
       propertyPath: m_Color.b
       value: 1

@@ -13,21 +13,27 @@ MonoBehaviour:
   m_Name: PlayerSettings
   m_EditorClassIdentifier: 
   health: 100
-  hurtStaggerDelay: 0.5
-  playerLayer: Player
-  playerInvulnLayer: PlayerInvulnerable
+  hurtStaggerDelay: 0.2
+  hurtSound: {fileID: 8300000, guid: 2375dadc4293d3f4380b59887ce8416b, type: 3}
   blockedDamage: 0.8
   pushBackForce: 3
+  blockedSound: {fileID: 8300000, guid: 67dd73a8fb8b99e4d8c8d793c86c4324, type: 3}
   rollDuration: 0.7
   rollForce: 400
   rollCoolDown: 2
+  rollSound: {fileID: 8300000, guid: 574d70118068c704e9d2654d8e5b386f, type: 3}
   playerStopsWhenKeyUp: 1
   movementSpeed: 150
+  moveSound: {fileID: 8300000, guid: 69a1cba5022b43b478202d9b934c61bb, type: 3}
   jumpForce: 500
+  jumpSound: {fileID: 8300000, guid: 622f42e8d781b8a44b119174e4ed9708, type: 3}
   canMoveWhenFalling: 1
   xSpeedMofierFalling: 0.8
+  landingSound: {fileID: 8300000, guid: 18524d7f295d11b40a2b7bd3d9ef3561, type: 3}
   offGroundDelayToFall: 0.1
   primaryAttackDamage: 15
-  primaryAttackCoolDown: 0.2
+  primaryAttackCoolDown: 0.5
+  primaryAttackSound: {fileID: 8300000, guid: 7053294e066eb1945baa4d9cc9194f15, type: 3}
   secondaryAttackDamage: 25
   secondaryAttackCoolDown: 1
+  secondaryAttackSound: {fileID: 8300000, guid: 13182107f288fdc47a11f9216c8f062b, type: 3}

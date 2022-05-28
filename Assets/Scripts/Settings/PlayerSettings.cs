@@ -17,6 +17,10 @@ namespace Settings
         private float hurtStaggerDelay;
         public float HurtStaggerDelay => hurtStaggerDelay;
 
+        [SerializeField]
+        private AudioClip hurtSound;
+        public AudioClip HurtSound => hurtSound;
+
         [Header("Block")]
         [SerializeField]
         [Range(0,1)]
@@ -27,6 +31,10 @@ namespace Settings
         [Tooltip("Force * dommage qui arrivent")]
         private float pushBackForce;
         public float PushBackForce => pushBackForce;
+
+        [SerializeField]
+        private AudioClip blockedSound;
+        public AudioClip BlockedSound => blockedSound;
 
         [Header("Roll")]
         [SerializeField]
@@ -41,6 +49,10 @@ namespace Settings
         private float rollCoolDown;
         public float RollCoolDown => rollCoolDown;
 
+        [SerializeField]
+        private AudioClip rollSound;
+        public AudioClip RollSound => rollSound;
+
         [Header("Movement")]
 
         [SerializeField]
@@ -52,8 +64,18 @@ namespace Settings
         public float MovementSpeed => movementSpeed;
 
         [SerializeField]
+        private AudioClip moveSound;
+        public AudioClip MoveSound => moveSound;
+
+        [Header("Jumping")]
+
+        [SerializeField]
         private float jumpForce;
         public float JumpForce => jumpForce;
+
+        [SerializeField]
+        private AudioClip jumpSound;
+        public AudioClip JumpSound => jumpSound;
 
         [Header("Falling")]
 
@@ -65,6 +87,10 @@ namespace Settings
         [Range(0,1)]
         private float xSpeedMofierFalling;
         public float XSpeedModiferFalling => xSpeedMofierFalling;
+
+        [SerializeField]
+        private AudioClip landingSound;
+        public AudioClip LandingSound => landingSound;
 
         [SerializeField]
         [Tooltip("delais que onGround = false pour considerer le joueur comme etant entrain de tomber")]
@@ -81,6 +107,10 @@ namespace Settings
         private float primaryAttackCoolDown;
         public float PrimaryAttackCoolDown => primaryAttackCoolDown;
 
+        [SerializeField]
+        private AudioClip primaryAttackSound;
+        public AudioClip PrimaryAttackSound => primaryAttackSound;
+
         [Header("Secondary attack")]
 
         [SerializeField]
@@ -90,6 +120,10 @@ namespace Settings
         [SerializeField]
         private float secondaryAttackCoolDown;
         public float SecondaryAttackCoolDown => secondaryAttackCoolDown;
+
+        [SerializeField]
+        private AudioClip secondaryAttackSound;
+        public AudioClip SecodaryAttackSound => secondaryAttackSound;
     }
 }
 
