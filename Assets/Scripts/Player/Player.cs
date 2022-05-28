@@ -437,6 +437,9 @@ public class Player : MonoBehaviour
 
     private void Die()
     {
+        gameObject.layer = LayerMask.NameToLayer(gameSettings.PlayerInvulnLayer);
+        audioSource.pitch = 1;
+        PlayClip(settings.dieSound);
         gameEvents.OnGameOver();
         animator.SetTrigger("Death");
     }

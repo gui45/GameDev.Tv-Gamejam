@@ -15,6 +15,7 @@ MonoBehaviour:
   health: 100
   hurtStaggerDelay: 0.2
   hurtSound: {fileID: 8300000, guid: 2375dadc4293d3f4380b59887ce8416b, type: 3}
+  dieClip: {fileID: 8300000, guid: 365d2ee8824704243b3e4d89f3cc3441, type: 3}
   blockedDamage: 0.8
   pushBackForce: 3
   blockedSound: {fileID: 8300000, guid: 67dd73a8fb8b99e4d8c8d793c86c4324, type: 3}

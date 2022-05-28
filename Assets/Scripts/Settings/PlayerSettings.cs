@@ -21,6 +21,10 @@ namespace Settings
         private AudioClip hurtSound;
         public AudioClip HurtSound => hurtSound;
 
+        [SerializeField]
+        private AudioClip dieClip;
+        public AudioClip dieSound => dieClip;
+
         [Header("Block")]
         [SerializeField]
         [Range(0,1)]
