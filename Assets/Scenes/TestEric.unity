@@ -1457,7 +1457,7 @@ GameObject:
   - component: {fileID: 1789440926}
   - component: {fileID: 1789440925}
   m_Layer: 9
-  m_Name: GameObject
+  m_Name: AIFlipSide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
