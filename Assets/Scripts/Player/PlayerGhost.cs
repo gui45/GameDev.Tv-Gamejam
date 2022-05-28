@@ -23,6 +23,7 @@ public class PlayerGhost : MonoBehaviour
     private float currentSpeed;
     private bool ghost = false;
     private float offGrounfDelay;
+    private float timeAsGhost;
 
     private void Start()
     {
@@ -164,6 +165,7 @@ public class PlayerGhost : MonoBehaviour
 
         if (ghost)
         {
+            timeAsGhost = 0;
             spriteRenderer.enabled = true;
         }
         else
@@ -184,6 +186,7 @@ public class PlayerGhost : MonoBehaviour
             rb.AddForce(new Vector2(0, settings.JumpForce));
         }
     }
+
     public bool TakeDamage(float dmg, float xIncomingDirection)
     {
         health -= dmg;

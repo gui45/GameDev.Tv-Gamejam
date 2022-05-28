@@ -12,6 +12,10 @@ namespace Settings
         private int fpsLimit;
         public int FpsLimit => fpsLimit;
 
+        [SerializeField]
+        private float maxTimeAsGhost;
+        public float MaxTimeAsGhost => maxTimeAsGhost;
+
         [Header("Layers")]
 
         [SerializeField]

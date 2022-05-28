@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GhostSettings
   m_EditorClassIdentifier: 
   health: 100
-  playerGhostLayer: PlayerGhost
+  maxTimeAsGhost: 30
   playerStopsWhenKeyUp: 1
   movementSpeed: 150
   jumpForce: 500
