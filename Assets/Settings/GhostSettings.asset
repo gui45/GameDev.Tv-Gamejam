@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: GhostSettings
   m_EditorClassIdentifier: 
   health: 100
-  maxTimeAsGhost: 30
   playerStopsWhenKeyUp: 1
   movementSpeed: 150
-  jumpForce: 500
+  jumpForce: 550
   canMoveWhenFalling: 1
   xSpeedMofierFalling: 1
   offGroundDelayToFall: 0.1

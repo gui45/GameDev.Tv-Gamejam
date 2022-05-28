@@ -26,7 +26,7 @@ MonoBehaviour:
   playerStopsWhenKeyUp: 1
   movementSpeed: 150
   moveSound: {fileID: 8300000, guid: 69a1cba5022b43b478202d9b934c61bb, type: 3}
-  jumpForce: 500
+  jumpForce: 450
   jumpSound: {fileID: 8300000, guid: 622f42e8d781b8a44b119174e4ed9708, type: 3}
   canMoveWhenFalling: 1
   xSpeedMofierFalling: 0.8
