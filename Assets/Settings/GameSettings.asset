@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GameSettings
   m_EditorClassIdentifier: 
   fpsLimit: 60
+  maxTimeAsGhost: 30
   playerLayer: Player
   playerInvulnLayer: PlayerInvulnerable
   groundLayer: Ground
