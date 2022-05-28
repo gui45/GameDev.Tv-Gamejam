@@ -33,6 +33,7 @@ public class Enemies : MonoBehaviour
     private float health;
     private float currentDirection;
     private bool canAttack;
+    private bool canMove;
     private bool isAttacking;
     private bool isDead;
 
@@ -57,6 +58,7 @@ public class Enemies : MonoBehaviour
         health = settings.Health;
         isAttacking = false;
         canAttack = true;
+        canMove = true;
         isDead = false;
         animator.SetBool("IsDead", false);
 
@@ -92,7 +94,7 @@ public class Enemies : MonoBehaviour
             PrepAttack1();
         }
 
-        if (!isAttacking)
+        if (!isAttacking && canMove)
         { 
             MovementUpdate();
             FlipUpdate();
@@ -114,10 +116,16 @@ public class Enemies : MonoBehaviour
         return false;
     }
 
-    private IEnumerator ResetAttack()
+    private IEnumerator ResetAttack(float timer)
     {
-        yield return new WaitForSecondsRealtime(settings.TimeBetweenAttack);
+        yield return new WaitForSecondsRealtime(timer);
         canAttack = true;
+    }
+
+    private IEnumerator ResetMove(float timer)
+    {
+        yield return new WaitForSecondsRealtime(timer);
+        canMove = true;
     }
 
     private void Attack1()
@@ -125,7 +133,7 @@ public class Enemies : MonoBehaviour
         canAttack = false;
         CauseDamage(settings.Attack1Damage);
 
-        StartCoroutine(ResetAttack());
+        StartCoroutine(ResetAttack(settings.TimeBetweenAttack));
         isAttacking = false;
     }
 
@@ -225,6 +233,8 @@ public class Enemies : MonoBehaviour
     public bool TakeDamage(float dmg)
     {
         health -= dmg;
+        canAttack = false;
+        canMove = false;
 
         animator.SetTrigger("TakeDamage");
         animator.SetBool("IsAttacking", false);
@@ -237,6 +247,9 @@ public class Enemies : MonoBehaviour
         }
 
         PlayClip(settings.HurtSound);
+        StartCoroutine(ResetAttack(settings.TimeToRecover));
+        StartCoroutine(ResetMove(settings.TimeToRecover));
+
         return false;
     }
     private void Die()

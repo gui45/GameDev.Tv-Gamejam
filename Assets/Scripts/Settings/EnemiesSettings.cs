@@ -22,7 +22,9 @@ namespace Settings
         [SerializeField]
         private float timeBetweenAttack;
         public float TimeBetweenAttack => timeBetweenAttack;
-
+        [SerializeField]
+        private float timeToRecover;
+        public float TimeToRecover => timeToRecover;
 
         [SerializeField]
         private AudioClip primaryAttackSound;
