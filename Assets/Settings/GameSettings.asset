@@ -19,3 +19,4 @@ MonoBehaviour:
   groundLayer: Ground
   enemiesLayer: Enemies
   playerGhostLayer: PlayerGhost
+  deadBodyLayer: DeadBody

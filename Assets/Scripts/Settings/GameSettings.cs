@@ -37,5 +37,9 @@ namespace Settings
         [SerializeField]
         private string playerGhostLayer;
         public string PlayerGhostLayer => playerGhostLayer;
+
+        [SerializeField]
+        private string deadBodyLayer;
+        public string DeadBodyLayer => deadBodyLayer;
     }
 }
