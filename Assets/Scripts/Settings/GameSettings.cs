@@ -21,6 +21,10 @@ namespace Settings
         private float maxTimeAsGhost;
         public float MaxTimeAsGhost => maxTimeAsGhost;
 
+        [SerializeField]
+        private GameObject interactableClue;
+        public GameObject InteractableClue => interactableClue;
+
         [Header("Layers")]
 
         [SerializeField]

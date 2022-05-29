@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     private float timeAsGhost;
     private bool ghost;
     private GameEvents gameEvents;
+    public bool ghostUnlocked = false;
 
     private GameSettings settings;
     private void Start()
@@ -45,12 +46,19 @@ public class GameManager : MonoBehaviour
     {
         gameEvents.OnSwitchModeEvent += OnSwitchGhost;
         gameEvents.OnNextSceneEvent += OnNextScene;
+        gameEvents.OnUnlockGhostEvent += OnUnlockGhost;
     }
 
     private void RemoveEvents()
     {
         gameEvents.OnSwitchModeEvent -= OnSwitchGhost;
         gameEvents.OnNextSceneEvent -= OnNextScene;
+        gameEvents.OnUnlockGhostEvent -= OnUnlockGhost;
+    }
+
+    private void OnUnlockGhost()
+    {
+        ghostUnlocked = true;
     }
 
     private void OnNextScene(int id)

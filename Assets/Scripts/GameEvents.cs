@@ -15,12 +15,14 @@ public class GameEvents : MonoBehaviour
     public event Action OnRollEvent;
     public event Action OnBlockEvent;
     public event Action OnSwitchModeEvent;
+    public event Action OnInteractEvent;
 
     public event Action OnGameOverEvent;
     public event Action<float, float> OnPlayerHealthChangeEvent;
     public event Action<float, float> OnPlayerGhostHealthChangeEvent;
     public event Action<UI> OnNextUIEvent;
     public event Action<int> OnNextSceneEvent;
+    public event Action OnUnlockGhostEvent;
 
     void Awake()
     {
@@ -37,6 +39,10 @@ public class GameEvents : MonoBehaviour
 
     // GAME EVENTS
 
+    public void OnGhostUnlock()
+    {
+        OnUnlockGhostEvent?.Invoke();
+    }
     public void OnNextScene(int scene)
     {
         OnNextSceneEvent?.Invoke(scene);
@@ -64,9 +70,17 @@ public class GameEvents : MonoBehaviour
 
     // INPUTS
 
+    public void OnInteract()
+    {
+        OnInteractEvent?.Invoke();
+    }
+
     public void OnSwitchMode()
     {
-        OnSwitchModeEvent?.Invoke();
+        if (GetComponent<GameManager>().ghostUnlocked)
+        {
+            OnSwitchModeEvent?.Invoke();
+        }
     }
 
     public void OnBlock()
@@ -91,13 +105,11 @@ public class GameEvents : MonoBehaviour
 
     public void OnJump()
     {
-        //Debug.Log("jump");
         onJumpEvent?.Invoke();
     }
 
     public void OnMove(InputValue input)
     {
-        //Debug.Log("Move " + input.Get<float>());
         onMoveEvent?.Invoke(input.Get<float>());
     }
 }
