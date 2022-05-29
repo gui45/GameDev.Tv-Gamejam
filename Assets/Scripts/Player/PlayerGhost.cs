@@ -13,7 +13,6 @@ public class PlayerGhost : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rb;
-    private Animator animator;
     private GameEvents gameEvents;
     private CapsuleCollider2D capsuleCollider;
     private GameSettings gameSettings;
@@ -23,13 +22,11 @@ public class PlayerGhost : MonoBehaviour
     private float currentSpeed;
     private bool ghost = false;
     private float offGrounfDelay;
-    private float timeAsGhost;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>(); 
-        animator = GetComponent<Animator>(); 
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         gameSettings = SettingsRepository.instance.GameSettings;
         gameEvents = GameEvents.instance;
@@ -165,7 +162,6 @@ public class PlayerGhost : MonoBehaviour
 
         if (ghost)
         {
-            timeAsGhost = 0;
             spriteRenderer.enabled = true;
         }
         else
@@ -187,17 +183,18 @@ public class PlayerGhost : MonoBehaviour
         }
     }
 
-    public bool TakeDamage(float dmg, float xIncomingDirection)
+    public bool TakeDamage(float dmg)
     {
         health -= dmg;
 
         if (health <= 0)
         {
-            
+            gameEvents.OnPlayerGhostHealthChange(0, settings.Health);
             return true;
         }
         else
         {
+            gameEvents.OnPlayerGhostHealthChange(health, settings.Health);
             return false;
         }
     }

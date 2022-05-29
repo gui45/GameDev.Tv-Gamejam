@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace Settings
 {
@@ -8,6 +9,10 @@ namespace Settings
     public class GameSettings : ScriptableObject
     {
         [Header("General")]
+        [SerializeField]
+        private AudioMixerGroup mainMixer;
+        public AudioMixerGroup MainMixer => mainMixer;
+
         [SerializeField]
         private int fpsLimit;
         public int FpsLimit => fpsLimit;

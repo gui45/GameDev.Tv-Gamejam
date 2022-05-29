@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25a2a72f32122e49805486c7ead7913, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
+  mainMixer: {fileID: 24300002, guid: 1d9acf196ac174f41823354615e9289d, type: 2}
   fpsLimit: 60
   maxTimeAsGhost: 30
   playerLayer: Player

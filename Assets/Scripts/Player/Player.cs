@@ -27,7 +27,6 @@ public class Player : MonoBehaviour
     private bool primaryAttackFlip = false;
     private List<Enemies> enemiesInRange = new List<Enemies>();
     private PlayerStates state = PlayerStates.IDLE;
-    private float deadForSeconds = 0;
     private float staggerDelay = 0;
     private float rollDuration = 0;
     private bool blocking = false;
@@ -477,13 +476,16 @@ public class Player : MonoBehaviour
 
         rb.AddForce(new Vector2(force, 0));
 
+
         if (health <= 0)
         {
+            gameEvents.OnPlayerHealthChange(0, settings.Health);
             Die();
             return true;
         }
         else
         {
+            gameEvents.OnPlayerHealthChange(health, settings.Health);
             PlayClip(settings.BlockedSound);
             animator.SetTrigger("Block");
             return false;
@@ -502,11 +504,15 @@ public class Player : MonoBehaviour
 
         health -= dmg;
 
+
         if (health <= 0)
         {
+            gameEvents.OnPlayerHealthChange(0, settings.Health);
             Die();
             return true;
         }
+
+        gameEvents.OnPlayerHealthChange(health, settings.Health);
 
         PlayClip(settings.HurtSound);
 

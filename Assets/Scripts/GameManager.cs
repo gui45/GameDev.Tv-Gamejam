@@ -2,6 +2,7 @@ using Settings;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,7 +18,14 @@ public class GameManager : MonoBehaviour
 
         Application.targetFrameRate = settings.FpsLimit;
 
+        DontDestroyOnLoad(gameObject);
+
         AddEvents();
+
+        //eww
+        settings.MainMixer.audioMixer.SetFloat("MasterVolume", Mathf.Log10(PlayerPrefs.GetFloat("MasterVolume", 1)) * 20);
+        settings.MainMixer.audioMixer.SetFloat("MusicVolume", Mathf.Log10(PlayerPrefs.GetFloat("MusicVolume", 1)) * 20);
+        settings.MainMixer.audioMixer.SetFloat("SFXVolume", Mathf.Log10(PlayerPrefs.GetFloat("SFXVolume", 1)) * 20);
     }
 
     private void OnDestroy()
@@ -36,11 +44,18 @@ public class GameManager : MonoBehaviour
     private void AddEvents()
     {
         gameEvents.OnSwitchModeEvent += OnSwitchGhost;
+        gameEvents.OnNextSceneEvent += OnNextScene;
     }
 
     private void RemoveEvents()
     {
         gameEvents.OnSwitchModeEvent -= OnSwitchGhost;
+        gameEvents.OnNextSceneEvent -= OnNextScene;
+    }
+
+    private void OnNextScene(int id)
+    {
+        SceneManager.LoadScene(id);
     }
 
     private void OnSwitchGhost()

@@ -103,10 +103,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: HeroKnight
       objectReference: {fileID: 0}
+    - target: {fileID: 5583349430451938967, guid: e5f474c11f1a4b04fa97a785ade761aa, type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5583349430451938967, guid: e5f474c11f1a4b04fa97a785ade761aa, type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5583349430451938967, guid: e5f474c11f1a4b04fa97a785ade761aa, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1823691871
+      objectReference: {fileID: 0}
     - target: {fileID: 8736573660163961275, guid: e5f474c11f1a4b04fa97a785ade761aa, type: 3}
       propertyPath: m_Pitch
       value: 0.73
       objectReference: {fileID: 0}
+    - target: {fileID: 8736573660163961275, guid: e5f474c11f1a4b04fa97a785ade761aa, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 6432983584013014541, guid: 1d9acf196ac174f41823354615e9289d, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5f474c11f1a4b04fa97a785ade761aa, type: 3}
 --- !u!114 &1306576391898406742 stripped
@@ -159,6 +175,10 @@ PrefabInstance:
     - target: {fileID: 1733191424294375601, guid: 5d85ab9e00ac230458bc8a73b1acf090, type: 3}
       propertyPath: m_Color.r
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1733191424294375601, guid: 5d85ab9e00ac230458bc8a73b1acf090, type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1733191424294375601, guid: 5d85ab9e00ac230458bc8a73b1acf090, type: 3}
       propertyPath: m_Materials.Array.data[0]

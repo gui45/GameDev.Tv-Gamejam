@@ -17,6 +17,10 @@ public class GameEvents : MonoBehaviour
     public event Action OnSwitchModeEvent;
 
     public event Action OnGameOverEvent;
+    public event Action<float, float> OnPlayerHealthChangeEvent;
+    public event Action<float, float> OnPlayerGhostHealthChangeEvent;
+    public event Action<UI> OnNextUIEvent;
+    public event Action<int> OnNextSceneEvent;
 
     void Awake()
     {
@@ -33,9 +37,29 @@ public class GameEvents : MonoBehaviour
 
     // GAME EVENTS
 
+    public void OnNextScene(int scene)
+    {
+        OnNextSceneEvent?.Invoke(scene);
+    }
+
+    public void OnNextUI(UI ui)
+    {
+        OnNextUIEvent?.Invoke(ui);
+    }
+
     public void OnGameOver()
     {
         OnGameOverEvent?.Invoke();
+    }
+
+    public void OnPlayerHealthChange(float newAmount, float startAmount)
+    {
+        OnPlayerHealthChangeEvent?.Invoke(newAmount, startAmount);
+    }
+
+    public void OnPlayerGhostHealthChange(float newAmount, float startAmount)
+    {
+        OnPlayerGhostHealthChangeEvent?.Invoke(newAmount, startAmount);
     }
 
     // INPUTS
