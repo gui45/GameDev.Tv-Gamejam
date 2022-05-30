@@ -2,6 +2,7 @@ using Settings;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -72,7 +73,7 @@ public class Player : MonoBehaviour
         gameEvents.onJumpEvent += OnJump;
         gameEvents.onMoveEvent += OnMove;
         gameEvents.OnBlockEvent += OnBlock;
-        gameEvents.OnGameOverEvent += OnGameOver;
+        //gameEvents.OnGameOverEvent += OnGameOver;
         gameEvents.OnSwitchModeEvent += OnSwitchMode;
         gameEvents.OnPrimaryActionEvent += OnPrimaryAttack;
         gameEvents.OnSecondaryActionEvent += OnSecondaryActtack;
@@ -84,7 +85,7 @@ public class Player : MonoBehaviour
         gameEvents.onJumpEvent -= OnJump;
         gameEvents.onMoveEvent -= OnMove;
         gameEvents.OnBlockEvent -= OnBlock;
-        gameEvents.OnGameOverEvent -= OnGameOver;
+        //gameEvents.OnGameOverEvent -= OnGameOver;
         gameEvents.OnSwitchModeEvent -= OnSwitchMode;
         gameEvents.OnPrimaryActionEvent -= OnPrimaryAttack;
         gameEvents.OnSecondaryActionEvent -= OnSecondaryActtack;
@@ -124,10 +125,10 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnGameOver()
-    {
-        Destroy(this);
-    }
+    //private void OnGameOver()
+    //{
+    //    Destroy(this);
+    //}
 
     private void EvalState()
     {
@@ -441,6 +442,14 @@ public class Player : MonoBehaviour
         PlayClip(settings.dieSound);
         gameEvents.OnGameOver();
         animator.SetTrigger("Death");
+
+        StartCoroutine(respawn());
+    }
+
+    private IEnumerator respawn()
+    {
+        yield return new WaitForSeconds(2);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public bool TakeDamage(float dmg, float xIncomingDirection)

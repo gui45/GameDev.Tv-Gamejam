@@ -11,6 +11,8 @@ using System;
 public class Enemies : MonoBehaviour
 {
     [SerializeField]
+    private bool winOnDeath;
+    [SerializeField]
     private EnemiesSettings settings;
     private Rigidbody2D rb;
     private Animator animator;
@@ -54,6 +56,7 @@ public class Enemies : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
+        gameEvents = GameEvents.instance;
 
         health = settings.Health;
         isAttacking = false;
@@ -254,6 +257,11 @@ public class Enemies : MonoBehaviour
     }
     private void Die()
     {
+        if (winOnDeath)
+        {
+            gameEvents.OnVictory();
+        }
+
         StopClip();
         isDead = true;
         PlayClip(settings.dieSound);

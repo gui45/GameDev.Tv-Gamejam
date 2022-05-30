@@ -29,6 +29,10 @@ namespace Settings
         private Popup escPopup;
         public Popup EscPopup => escPopup;
 
+        [SerializeField]
+        private Popup victoryPopup;
+        public Popup VictoryPopup => victoryPopup;
+
         [Header("Layers")]
 
         [SerializeField]

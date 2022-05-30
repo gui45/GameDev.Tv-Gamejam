@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be26ce86872292840862aae292872df7, type: 3}
+  m_Name: GiantSkeletonSettings
+  m_EditorClassIdentifier: 
+  movementSpeed: 40
+  health: 250
+  attack1Damage: 50
+  timeBetweenAttack: 0.5
+  timeToRecover: 0.2
+  primaryAttackSound: {fileID: 8300000, guid: 0db81b61afcdb2e469705744845593bd, type: 3}
+  hurtSound: {fileID: 8300000, guid: ccb6cb82ec50f77458c27c997d9f559d, type: 3}
+  dieClip: {fileID: 8300000, guid: 0ea6df40dc29ac74281be9d4832d39c6, type: 3}
+  moveSound: {fileID: 0}

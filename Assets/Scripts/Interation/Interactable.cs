@@ -78,11 +78,8 @@ public abstract class Interactable : MonoBehaviour
                 animator.SetTrigger("Interact");
             }
 
-            Debug.Log(spawnedClue);
-
             if (OneTime)
             {
-                Debug.Log(spawnedClue);
                 Destroy(spawnedClue);
                 Destroy(this);
             }

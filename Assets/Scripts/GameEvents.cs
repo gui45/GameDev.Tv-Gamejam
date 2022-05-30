@@ -24,6 +24,7 @@ public class GameEvents : MonoBehaviour
     public event Action<UI> OnNextUIEvent;
     public event Action<int> OnNextSceneEvent;
     public event Action OnUnlockGhostEvent;
+    public event Action OnVictoryEvent;
 
     void Awake()
     {
@@ -37,7 +38,6 @@ public class GameEvents : MonoBehaviour
             instance = this;
         }
     }
-
 
     // GAME EVENTS
 
@@ -68,6 +68,11 @@ public class GameEvents : MonoBehaviour
     public void OnPlayerGhostHealthChange(float newAmount, float startAmount)
     {
         OnPlayerGhostHealthChangeEvent?.Invoke(newAmount, startAmount);
+    }
+
+    public void OnVictory()
+    {
+        OnVictoryEvent?.Invoke();
     }
 
     // INPUTS

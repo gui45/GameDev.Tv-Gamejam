@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
 
     private Popup escPopup;
     private GameSettings settings;
+
+    private bool Victory;
     private void Start()
     {
         gameEvents = GameEvents.instance;
@@ -48,6 +50,7 @@ public class GameManager : MonoBehaviour
         gameEvents.OnSwitchModeEvent += OnSwitchGhost;
         gameEvents.OnNextSceneEvent += OnNextScene;
         gameEvents.OnUnlockGhostEvent += OnUnlockGhost;
+        gameEvents.OnVictoryEvent += onVictory;
     }
 
     private void RemoveEvents()
@@ -55,6 +58,13 @@ public class GameManager : MonoBehaviour
         gameEvents.OnSwitchModeEvent -= OnSwitchGhost;
         gameEvents.OnNextSceneEvent -= OnNextScene;
         gameEvents.OnUnlockGhostEvent -= OnUnlockGhost;
+        gameEvents.OnVictoryEvent -= onVictory;
+    }
+
+    private void onVictory()
+    {
+        Victory = true;
+        Instantiate(settings.VictoryPopup, FindObjectOfType<Canvas>().transform);
     }
 
     private void OnUnlockGhost()
@@ -94,7 +104,7 @@ public class GameManager : MonoBehaviour
     //...
     public void OnEsc()
     {
-        if (GetComponent<GameManager>().CanOpenEscPopup())
+        if (!Victory && GetComponent<GameManager>().CanOpenEscPopup())
         {
             if (escPopup == null)
             {
