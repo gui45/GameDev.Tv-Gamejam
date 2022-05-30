@@ -14,9 +14,12 @@ public class GameManager : MonoBehaviour
     private Popup escPopup;
     private GameSettings settings;
 
+    private AudioSource audioSource;
+
     private bool Victory;
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         gameEvents = GameEvents.instance;
         settings = SettingsRepository.instance.GameSettings;
 
@@ -41,7 +44,27 @@ public class GameManager : MonoBehaviour
     {
         if (ghost)
         {
+            if (audioSource.clip != settings.ClipGhost)
+            {
+                audioSource.clip = settings.ClipGhost;
+                audioSource.Play();
+            }
             CountDownTimeAsGhost();
+        }else if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            if (audioSource.clip != settings.Clipmain)
+            {
+                audioSource.clip = settings.Clipmain;
+                audioSource.Play();
+            }
+        }
+        else
+        {
+            if (audioSource.clip != settings.ClipKnight)
+            {
+                audioSource.clip = settings.ClipKnight;
+                audioSource.Play();
+            }
         }
     }
 

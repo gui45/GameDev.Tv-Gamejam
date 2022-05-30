@@ -12,12 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25a2a72f32122e49805486c7ead7913, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
-  mainMixer: {fileID: 24300002, guid: 1d9acf196ac174f41823354615e9289d, type: 2}
   fpsLimit: 60
   maxTimeAsGhost: 30
   interactableClue: {fileID: 26645316397259381, guid: 22a02493cb3e8bc4ebcc9146ac7daa2e, type: 3}
   escPopup: {fileID: 209078355704861658, guid: 680d9c847e8231f469f1135099f8685a, type: 3}
   victoryPopup: {fileID: 7061392470483467199, guid: 2543ca1e61864194faef0cd3f63f837f, type: 3}
+  mainMixer: {fileID: 24300002, guid: 1d9acf196ac174f41823354615e9289d, type: 2}
+  clipmain: {fileID: 8300000, guid: 287ba824dee6c674b89593f6d6231694, type: 3}
+  clipKnight: {fileID: 8300000, guid: d5411752b2ff6704882c37c51a5a1e64, type: 3}
+  clipGhost: {fileID: 8300000, guid: b84c25ad6666cb943b2df7b3eb272b89, type: 3}
   playerLayer: Player
   playerInvulnLayer: PlayerInvulnerable
   groundLayer: Ground

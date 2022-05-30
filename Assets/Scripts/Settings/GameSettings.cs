@@ -9,9 +9,6 @@ namespace Settings
     public class GameSettings : ScriptableObject
     {
         [Header("General")]
-        [SerializeField]
-        private AudioMixerGroup mainMixer;
-        public AudioMixerGroup MainMixer => mainMixer;
 
         [SerializeField]
         private int fpsLimit;
@@ -32,6 +29,24 @@ namespace Settings
         [SerializeField]
         private Popup victoryPopup;
         public Popup VictoryPopup => victoryPopup;
+
+        [Header("Audio")]
+
+        [SerializeField]
+        private AudioMixerGroup mainMixer;
+        public AudioMixerGroup MainMixer => mainMixer;
+
+        [SerializeField]
+        private AudioClip clipmain;
+        public AudioClip Clipmain => clipmain;
+
+        [SerializeField]
+        private AudioClip clipKnight;
+        public AudioClip ClipKnight => clipKnight;
+
+        [SerializeField]
+        private AudioClip clipGhost;
+        public AudioClip ClipGhost => clipGhost;
 
         [Header("Layers")]
 
