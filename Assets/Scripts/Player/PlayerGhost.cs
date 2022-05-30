@@ -167,6 +167,7 @@ public class PlayerGhost : MonoBehaviour
         else
         {
             spriteRenderer.enabled = false;
+            transform.position = new Vector2(-100, -100); // throwing it away as a quick fix
         }
     }
 
