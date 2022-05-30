@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     private GameEvents gameEvents;
     public bool ghostUnlocked = false;
 
+    private Popup escPopup;
     private GameSettings settings;
     private void Start()
     {
@@ -85,4 +86,24 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public bool CanOpenEscPopup()
+    {
+        return SceneManager.GetActiveScene().buildIndex != 0;//not main menu
+    }
+
+    //...
+    public void OnEsc()
+    {
+        if (GetComponent<GameManager>().CanOpenEscPopup())
+        {
+            if (escPopup == null)
+            {
+                escPopup = Instantiate(settings.EscPopup, FindObjectOfType<Canvas>().transform);
+            }
+            else
+            {
+                Destroy(escPopup.gameObject);
+            }
+        }
+    }
 }

@@ -16,6 +16,7 @@ public class GameEvents : MonoBehaviour
     public event Action OnBlockEvent;
     public event Action OnSwitchModeEvent;
     public event Action OnInteractEvent;
+    public event Action OnEscEvent;
 
     public event Action OnGameOverEvent;
     public event Action<float, float> OnPlayerHealthChangeEvent;
@@ -28,6 +29,7 @@ public class GameEvents : MonoBehaviour
     {
         if (instance != null)
         {
+            Destroy(gameObject);
             Debug.LogError("Game Event instance is already set");
         }
         else
@@ -69,6 +71,14 @@ public class GameEvents : MonoBehaviour
     }
 
     // INPUTS
+    //Ehhhh
+    //public void OnEsc()
+    //{
+    //    if (GetComponent<GameManager>().CanOpenEscPopup())
+    //    {
+    //        OnEscEvent?.Invoke();
+    //    }
+    //}
 
     public void OnInteract()
     {

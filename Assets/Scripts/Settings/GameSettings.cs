@@ -25,6 +25,10 @@ namespace Settings
         private GameObject interactableClue;
         public GameObject InteractableClue => interactableClue;
 
+        [SerializeField]
+        private Popup escPopup;
+        public Popup EscPopup => escPopup;
+
         [Header("Layers")]
 
         [SerializeField]
