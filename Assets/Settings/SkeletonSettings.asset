@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 75
   health: 40
-  attack1Damage: 50
+  attack1Damage: 25
   timeBetweenAttack: 0.5
   timeToRecover: 0.2
   primaryAttackSound: {fileID: 8300000, guid: 0db81b61afcdb2e469705744845593bd, type: 3}
